@@ -1,2 +1,2 @@
-# network
-网络库，目前只包含OKHttp的封装
+# Network Utils
+网络工具类，包含OKHttp、TCP、Netty、AKKA的封装
