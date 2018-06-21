@@ -4,10 +4,54 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.dxy</groupId>
-    <artifactId>library.network</artifactId>
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>9</version>
+    </parent>
+
+    <groupId>com.github.duanxinyuan</groupId>
+    <artifactId>library-network</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>oss</id>
+            <name>OSS Snapshots Repository</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </snapshotRepository>
+        <repository>
+            <id>oss</id>
+            <name>OSS Staging Repository</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <name>Network Utils</name>
+    <url>https://github.com/duanxinyuan/Network-Utils</url>
+    <description>网络工具类，包含OKHttp、TCP、Netty、AKKA的封装</description>
+
+    <scm>
+        <connection>scm:git:https://github.com/duanxinyuan/Network-Utils.git</connection>
+        <developerConnection>scm:git:https://github.com/duanxinyuan/Network-Utils.git</developerConnection>
+        <url>https://github.com/duanxinyuan/Json-Utils</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <name>duanxinyuan</name>
+            <email>919317632@qq.com</email>
+            <url>https://github.com/duanxinyuan</url>
+        </developer>
+    </developers>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -17,8 +61,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.mob.library</groupId>
-            <artifactId>json</artifactId>
+            <groupId>com.github.duanxinyuan</groupId>
+            <artifactId>library-json</artifactId>
             <version>1.0.0</version>
         </dependency>
         <dependency>
@@ -45,31 +89,12 @@
 
     <build>
         <plugins>
-            <!-- 项目包打到/target/lib目录下 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.4</version>
-                <configuration>
-                    <outputDirectory>${project.build.directory}/${project.artifactId}/lib</outputDirectory>
-                    <archive>
-                        <addMavenDescriptor>false</addMavenDescriptor>
-                    </archive>
-                    <excludes>
-                        <exclude>**/*Test.class</exclude>
-                        <exclude>**/*.properties</exclude>
-                        <exclude>**/*.sql</exclude>
-                        <exclude>**/*.xml</exclude>
-                        <exclude>**/*.txt</exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>8</source>
-                    <target>8</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
         </plugins>

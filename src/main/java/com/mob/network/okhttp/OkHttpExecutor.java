@@ -1,7 +1,7 @@
 package com.mob.network.okhttp;
 
+import com.dxy.library.json.GsonUtil;
 import com.google.gson.reflect.TypeToken;
-import com.mob.library.json.GsonUtil;
 import com.mob.network.okhttp.builder.OkBuilder;
 import com.mob.network.okhttp.callback.RequestCallback;
 import com.mob.network.okhttp.constant.Method;

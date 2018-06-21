@@ -1,7 +1,7 @@
 package com.mob.network.okhttp.builder;
 
 
-import com.mob.library.json.GsonUtil;
+import com.dxy.library.json.GsonUtil;
 import com.mob.network.okhttp.constant.Method;
 import com.mob.network.okhttp.header.Headers;
 import com.mob.network.okhttp.param.Params;
