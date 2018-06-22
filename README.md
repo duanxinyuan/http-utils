@@ -5,11 +5,11 @@
 
 
 Maven依赖：
-        <dependency>
-            <groupId>com.github.duanxinyuan</groupId>
-            <artifactId>library-network</artifactId>
-            <version>1.0.0</version>
-        </dependency>
+<dependency>
+    <groupId>com.github.duanxinyuan</groupId>
+    <artifactId>library-network</artifactId>
+    <version>1.0.0</version>
+</dependency>
 
 --------
 
