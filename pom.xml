@@ -12,7 +12,7 @@
 
     <groupId>com.github.duanxinyuan</groupId>
     <artifactId>library-network</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
     <packaging>jar</packaging>
 
     <distributionManagement>
@@ -63,12 +63,17 @@
         <dependency>
             <groupId>com.github.duanxinyuan</groupId>
             <artifactId>library-json</artifactId>
-            <version>1.0.0</version>
+            <version>1.1.0</version>
         </dependency>
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
             <version>2.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.6</version>
         </dependency>
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>

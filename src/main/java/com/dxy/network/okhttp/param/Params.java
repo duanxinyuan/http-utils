@@ -2,9 +2,11 @@ package com.dxy.network.okhttp.param;
 
 
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.*;
 
 /**
  * 请求的Param
@@ -86,5 +88,74 @@ public class Params extends LinkedHashMap<String, String> {
                 add(strings.get(i), strings.get(i + 1));
             }
         }
+    }
+
+    /**
+     * Url编码参数
+     */
+    public String encodeUrl() {
+        StringBuilder query = new StringBuilder();
+        boolean hasParam = false;
+        Set<Map.Entry<String, String>> entries = entrySet();
+        for (Map.Entry<String, String> entry : entries) {
+            String key = entry.getKey();
+            String value = String.valueOf(entry.getValue());
+            // 忽略参数名或参数值为空的参数
+            if (StringUtils.isNoneEmpty(key, value)) {
+                if (hasParam) {
+                    query.append("&");
+                } else {
+                    hasParam = true;
+                }
+                try {
+                    value = URLEncoder.encode(value, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                query.append(key).append("=").append(value);
+            }
+        }
+        return query.toString();
+    }
+
+    /**
+     * 按参数名排序编码参数
+     */
+    public String encodeSortByKey() {
+        StringBuilder content = new StringBuilder();
+        List<String> keys = new ArrayList<>(keySet());
+        Collections.sort(keys);
+        int index = 0;
+        for (String key : keys) {
+            String value = get(key);
+            if (StringUtils.isNoneEmpty(key, value)) {
+                content.append(index == 0 ? "" : "&").append(key).append("=").append(value);
+                index++;
+            }
+        }
+        return content.toString();
+    }
+
+    /**
+     * 编码参数
+     */
+    public String encode() {
+        StringBuilder query = new StringBuilder();
+        boolean hasParam = false;
+        Set<Map.Entry<String, String>> entries = entrySet();
+        for (Map.Entry<String, String> entry : entries) {
+            String key = entry.getKey();
+            String value = String.valueOf(entry.getValue());
+            // 忽略参数名或参数值为空的参数
+            if (StringUtils.isNoneEmpty(key, value)) {
+                if (hasParam) {
+                    query.append("&");
+                } else {
+                    hasParam = true;
+                }
+                query.append(key).append("=").append(value);
+            }
+        }
+        return query.toString();
     }
 }
