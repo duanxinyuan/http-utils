@@ -1,7 +1,7 @@
-package com.mob.network.okhttp.builder;
+package com.dxy.network.okhttp.builder;
 
-import com.mob.network.okhttp.header.Headers;
-import com.mob.network.okhttp.param.Params;
+import com.dxy.network.okhttp.header.Headers;
+import com.dxy.network.okhttp.param.Params;
 
 /**
  * Delete请求构建者

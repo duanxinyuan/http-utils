@@ -1,4 +1,4 @@
-package com.mob.network.okhttp.constant;
+package com.dxy.network.okhttp.constant;
 
 /**
  * Http请求方式

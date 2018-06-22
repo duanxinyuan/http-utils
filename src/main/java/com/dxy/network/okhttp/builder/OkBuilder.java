@@ -1,10 +1,10 @@
-package com.mob.network.okhttp.builder;
+package com.dxy.network.okhttp.builder;
 
 
 import com.dxy.library.json.GsonUtil;
-import com.mob.network.okhttp.constant.Method;
-import com.mob.network.okhttp.header.Headers;
-import com.mob.network.okhttp.param.Params;
+import com.dxy.network.okhttp.header.Headers;
+import com.dxy.network.okhttp.param.Params;
+import com.dxy.network.okhttp.constant.Method;
 import okhttp3.*;
 import okio.ByteString;
 
@@ -19,7 +19,7 @@ import java.net.URLConnection;
  */
 public class OkBuilder extends Request.Builder {
 
-    public static <T> OkBuilder builder(Method method, String url, com.mob.network.okhttp.header.Headers headers, Params params, T t, String fileKey, File file, String[] fileKeys, File[] files) {
+    public static <T> OkBuilder builder(Method method, String url, com.dxy.network.okhttp.header.Headers headers, Params params, T t, String fileKey, File file, String[] fileKeys, File[] files) {
         switch (method) {
             case GET:
                 //GET不支持传输Body
@@ -56,7 +56,7 @@ public class OkBuilder extends Request.Builder {
         }
     }
 
-    <T> RequestBody getRequestBody(com.mob.network.okhttp.header.Headers headers, T t, MediaType type) {
+    <T> RequestBody getRequestBody(com.dxy.network.okhttp.header.Headers headers, T t, MediaType type) {
         addHeader(headers);
         if (t instanceof String) {
             return RequestBody.create(type, (String) t);
@@ -69,7 +69,7 @@ public class OkBuilder extends Request.Builder {
         }
     }
 
-    RequestBody getRequestBody(com.mob.network.okhttp.header.Headers headers) {
+    RequestBody getRequestBody(com.dxy.network.okhttp.header.Headers headers) {
         addHeader(headers);
         return new FormBody.Builder().build();
     }
@@ -80,7 +80,7 @@ public class OkBuilder extends Request.Builder {
         return builder.build();
     }
 
-    RequestBody getRequestBody(com.mob.network.okhttp.header.Headers headers, Params params) {
+    RequestBody getRequestBody(com.dxy.network.okhttp.header.Headers headers, Params params) {
         addHeader(headers);
         FormBody.Builder builder = new FormBody.Builder();
         addFormData(builder, params);

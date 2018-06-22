@@ -1,13 +1,13 @@
-package com.mob.network.okhttp;
+package com.dxy.network.okhttp;
 
 import com.dxy.library.json.GsonUtil;
+import com.dxy.network.okhttp.builder.OkBuilder;
+import com.dxy.network.okhttp.header.Headers;
+import com.dxy.network.okhttp.param.Params;
+import com.dxy.network.okhttp.ssl.SSLSocketFactoryImpl;
 import com.google.gson.reflect.TypeToken;
-import com.mob.network.okhttp.builder.OkBuilder;
-import com.mob.network.okhttp.callback.RequestCallback;
-import com.mob.network.okhttp.constant.Method;
-import com.mob.network.okhttp.header.Headers;
-import com.mob.network.okhttp.param.Params;
-import com.mob.network.okhttp.ssl.SSLSocketFactoryImpl;
+import com.dxy.network.okhttp.callback.RequestCallback;
+import com.dxy.network.okhttp.constant.Method;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import okio.Buffer;
@@ -113,45 +113,45 @@ final class OkHttpExecutor {
 
     /******** 异步请求 *********/
 
-    void enqueue(Method method, String url, Headers headers, Params params, RequestCallback callback) {
+    void enqueue(Method method, String url, com.dxy.network.okhttp.header.Headers headers, Params params, RequestCallback callback) {
         enqueue(method, url, headers, params, null, null, null, null, null, callback);
     }
 
-    <T> void enqueue(Method method, String url, Headers headers, Params params, T t, RequestCallback callback) {
+    <T> void enqueue(Method method, String url, com.dxy.network.okhttp.header.Headers headers, Params params, T t, RequestCallback callback) {
         enqueue(method, url, headers, params, t, null, null, null, null, callback);
     }
 
-    void enqueue(String url, Headers headers, Params params, String fileKey, File file, RequestCallback callback) {
+    void enqueue(String url, com.dxy.network.okhttp.header.Headers headers, Params params, String fileKey, File file, RequestCallback callback) {
         enqueue(Method.POST, url, headers, params, null, fileKey, file, null, null, callback);
     }
 
-    void enqueue(String url, Headers headers, Params params, String[] fileKeys, File[] files, RequestCallback callback) {
+    void enqueue(String url, com.dxy.network.okhttp.header.Headers headers, Params params, String[] fileKeys, File[] files, RequestCallback callback) {
         enqueue(Method.POST, url, headers, params, null, null, null, fileKeys, files, callback);
     }
 
 
     /******** 同步请求 *********/
 
-    <V> V excute(Method method, String url, Headers headers, Params params, Class<V> c) {
+    <V> V excute(Method method, String url, com.dxy.network.okhttp.header.Headers headers, Params params, Class<V> c) {
         return excute(method, url, headers, params, null, c, null);
     }
 
-    <V> V excute(Method method, String url, Headers headers, Params params, TypeToken<V> typeToken) {
+    <V> V excute(Method method, String url, com.dxy.network.okhttp.header.Headers headers, Params params, TypeToken<V> typeToken) {
         return excute(method, url, headers, params, null, null, typeToken);
     }
 
-    <V, T> V excute(Method method, String url, Headers headers, Params params, T t, Class<V> c) {
+    <V, T> V excute(Method method, String url, com.dxy.network.okhttp.header.Headers headers, Params params, T t, Class<V> c) {
         return excute(method, url, headers, params, t, c, null);
     }
 
-    <V, T> V excute(Method method, String url, Headers headers, Params params, T t, TypeToken<V> typeToken) {
+    <V, T> V excute(Method method, String url, com.dxy.network.okhttp.header.Headers headers, Params params, T t, TypeToken<V> typeToken) {
         return excute(method, url, headers, params, t, null, typeToken);
     }
 
     /**
      * 异步请求
      */
-    private <T> void enqueue(Method method, String url, Headers headers, Params params, T t, String fileKey, File file, String[] fileKeys, File[] files, RequestCallback callback) {
+    private <T> void enqueue(Method method, String url, com.dxy.network.okhttp.header.Headers headers, Params params, T t, String fileKey, File file, String[] fileKeys, File[] files, RequestCallback callback) {
         OkBuilder builder = OkBuilder.builder(method, url, headers, params, t, fileKey, file, fileKeys, files);
         if (builder == null) {
             return;
@@ -202,7 +202,7 @@ final class OkHttpExecutor {
     /**
      * 同步请求
      */
-    private <V, T> V excute(Method method, String url, Headers headers, Params params, T t, Class<V> c, TypeToken<V> typeToken) {
+    private <V, T> V excute(Method method, String url, com.dxy.network.okhttp.header.Headers headers, Params params, T t, Class<V> c, TypeToken<V> typeToken) {
         OkBuilder builder = OkBuilder.builder(method, url, headers, params, t, null, null, null, null);
         if (builder == null) {
             return null;

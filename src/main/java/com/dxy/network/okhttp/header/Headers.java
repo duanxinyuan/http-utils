@@ -1,6 +1,6 @@
-package com.mob.network.okhttp.header;
+package com.dxy.network.okhttp.header;
 
-import com.mob.network.okhttp.param.Params;
+import com.dxy.network.okhttp.param.Params;
 
 /**
  * 请求的Header

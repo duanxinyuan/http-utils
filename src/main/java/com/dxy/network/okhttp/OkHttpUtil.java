@@ -1,11 +1,11 @@
-package com.mob.network.okhttp;
+package com.dxy.network.okhttp;
 
 
+import com.dxy.network.okhttp.header.Headers;
+import com.dxy.network.okhttp.param.Params;
 import com.google.gson.reflect.TypeToken;
-import com.mob.network.okhttp.callback.RequestCallback;
-import com.mob.network.okhttp.constant.Method;
-import com.mob.network.okhttp.header.Headers;
-import com.mob.network.okhttp.param.Params;
+import com.dxy.network.okhttp.callback.RequestCallback;
+import com.dxy.network.okhttp.constant.Method;
 
 import java.io.File;
 
