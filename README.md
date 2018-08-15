@@ -3,10 +3,11 @@
 
 
 ## Maven依赖：
+OKHttp：
 ```xml
 <dependency>
     <groupId>com.github.duanxinyuan</groupId>
-    <artifactId>library-network</artifactId>
+    <artifactId>library-network-okhttp</artifactId>
     <version>1.0.0</version>
 </dependency>
 ```
