@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <modules>
-        <module>okhttp</module>
+        <module>http</module>
         <module>netty</module>
         <module>akka</module>
     </modules>
@@ -40,14 +40,14 @@
         </license>
     </licenses>
 
-    <name>Network Utils</name>
-    <url>https://github.com/duanxinyuan/Network-Utils</url>
-    <description>网络工具类，包含OKHttp、TCP、Netty、AKKA的封装</description>
+    <name>Network</name>
+    <url>https://github.com/duanxinyuan/Network</url>
+    <description>网络库，包含Http、Netty、AKKA的封装</description>
 
     <scm>
-        <connection>scm:git:https://github.com/duanxinyuan/Network-Utils.git</connection>
-        <developerConnection>scm:git:https://github.com/duanxinyuan/Network-Utils.git</developerConnection>
-        <url>https://github.com/duanxinyuan/Network-Utils</url>
+        <connection>scm:git:https://github.com/duanxinyuan/Network.git</connection>
+        <developerConnection>scm:git:https://github.com/duanxinyuan/Network.git</developerConnection>
+        <url>https://github.com/duanxinyuan/Network</url>
     </scm>
 
     <developers>
@@ -84,6 +84,12 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>25.0-jre</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
