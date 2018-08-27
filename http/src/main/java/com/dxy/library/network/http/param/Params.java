@@ -1,6 +1,7 @@
 package com.dxy.library.network.http.param;
 
 
+import com.dxy.library.json.GsonUtil;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 
@@ -157,5 +158,10 @@ public class Params extends LinkedHashMap<String, String> {
             }
         }
         return query.toString();
+    }
+
+    @Override
+    public String toString() {
+        return GsonUtil.to(this);
     }
 }

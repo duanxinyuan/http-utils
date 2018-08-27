@@ -19,6 +19,7 @@ import java.io.*;
 import java.security.KeyStore;
 import java.util.LinkedHashMap;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * OkHttp请求实例
@@ -30,47 +31,56 @@ public final class OkHttpRequester extends BaseRequester {
 
     private volatile static OkHttpClient httpClient;
 
-    public OkHttpRequester() {
-        super();
-    }
-
-    public OkHttpRequester(boolean isLog) {
-        super(isLog);
+    public OkHttpRequester(boolean isLog, int timeout) {
+        super(isLog, timeout);
     }
 
     private OkHttpClient getOkHttpClient() {
         if (null == httpClient) {
             synchronized (OkHttpClient.class) {
                 if (null == httpClient) {
-                    OkHttpClient.Builder builder = new OkHttpClient().newBuilder();
-                    builder.addInterceptor((Interceptor.Chain chain) -> {
-                        Request request = chain.request();
-                        Response response = chain.proceed(request);
-                        if (!response.isSuccessful() && response.code() != 400) {
-                            //请求异常
-                            if (isLog) {
-                                log.error(processHttpError(response, request));
-                            }
-                        }
-                        return response;
-                    });
-                    try {
-                        //配置忽略SSL证书
-                        KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
-                        trustStore.load(null, null);
-                        SSLSocketFactoryImpl ssl = new SSLSocketFactoryImpl(KeyStore.getInstance(KeyStore.getDefaultType()));
-                        HostnameVerifier doNotVerify = (hostname, session) -> true;
-                        builder.sslSocketFactory(ssl.getSSLContext().getSocketFactory(), ssl.getTrustManager()).hostnameVerifier(doNotVerify);
-                    } catch (Exception e) {
-                        if (isLog) {
-                            log.error("ssl certificate config error", e);
-                        }
-                    }
-                    httpClient = builder.build();
+                    httpClient = newClient(timeout);
                 }
             }
         }
         return httpClient;
+    }
+
+    @Override
+    public void setTimeout(int timeout) {
+        super.setTimeout(timeout);
+        httpClient = newClient(timeout);
+    }
+
+    private OkHttpClient newClient(long timeout) {
+        OkHttpClient.Builder builder = new OkHttpClient().newBuilder();
+        builder.connectTimeout(timeout, TimeUnit.SECONDS);
+        builder.readTimeout(timeout, TimeUnit.SECONDS);
+        builder.writeTimeout(timeout, TimeUnit.SECONDS);
+        builder.addInterceptor((Interceptor.Chain chain) -> {
+            Request request = chain.request();
+            Response response = chain.proceed(request);
+            if (!response.isSuccessful() && response.code() != 400) {
+                //请求异常
+                if (isLog) {
+                    log.error(processHttpError(response, request));
+                }
+            }
+            return response;
+        });
+        try {
+            //配置忽略SSL证书
+            KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            trustStore.load(null, null);
+            SSLSocketFactoryImpl ssl = new SSLSocketFactoryImpl(KeyStore.getInstance(KeyStore.getDefaultType()));
+            HostnameVerifier doNotVerify = (hostname, session) -> true;
+            builder.sslSocketFactory(ssl.getSSLContext().getSocketFactory(), ssl.getTrustManager()).hostnameVerifier(doNotVerify);
+        } catch (Exception e) {
+            if (isLog) {
+                log.error("ssl certificate config error", e);
+            }
+        }
+        return builder.build();
     }
 
     /**

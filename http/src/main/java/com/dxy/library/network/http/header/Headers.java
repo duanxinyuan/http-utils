@@ -1,5 +1,6 @@
 package com.dxy.library.network.http.header;
 
+import com.dxy.library.json.GsonUtil;
 import com.dxy.library.network.http.param.Params;
 
 /**
@@ -29,5 +30,10 @@ public class Headers extends Params {
 
     public Headers(String key, Long value) {
         super(key, value);
+    }
+
+    @Override
+    public String toString() {
+        return GsonUtil.to(this);
     }
 }

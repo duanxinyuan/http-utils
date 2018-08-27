@@ -16,19 +16,37 @@ import java.io.File;
  */
 public class Executor {
 
+    //是否记录日志
     private boolean isLog;
+
+    //超时时间，单位为秒
+    private int timeout;
 
     private OkHttpRequester instance;
 
-    public Executor(boolean isLog) {
+    public Executor(boolean isLog, int timeout) {
         this.isLog = isLog;
+        this.timeout = timeout;
+    }
+
+    /**
+     * 设置超时时间，单位为秒
+     */
+    public Executor timeout(int timeout) {
+        if (timeout != this.timeout) {
+            this.timeout = timeout;
+            if (null != instance) {
+                instance.setTimeout(timeout);
+            }
+        }
+        return this;
     }
 
     public OkHttpRequester getExecutorInstance() {
         if (instance == null) {
             synchronized (OkHttpRequester.class) {
                 if (instance == null) {
-                    instance = new OkHttpRequester(isLog);
+                    instance = new OkHttpRequester(isLog, timeout);
                 }
             }
         }

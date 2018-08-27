@@ -8,7 +8,7 @@ Http：
 <dependency>
     <groupId>com.github.duanxinyuan</groupId>
     <artifactId>network-http</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.1</version>
 </dependency>
 ```
 
@@ -89,5 +89,11 @@ Params params=new Params("name","").add("key","").add("k1","v1","k2","v2","k3","
          
   解除日志屏蔽：
   Http.unblockLog();
+         
+  设置超时时间，单位为秒：
+  Http.timeout(120);
+         
+  开启日志请求，设置超时时间，单位为秒：
+  Http.enableLog().timeout(120).get(url, headers, params);
 
 ```

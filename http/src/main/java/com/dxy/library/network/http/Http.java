@@ -1,11 +1,11 @@
 package com.dxy.library.network.http;
 
 
-import com.google.gson.reflect.TypeToken;
 import com.dxy.library.network.http.callback.RequestCallback;
 import com.dxy.library.network.http.executor.Executor;
 import com.dxy.library.network.http.header.Headers;
 import com.dxy.library.network.http.param.Params;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 
@@ -15,10 +15,13 @@ import java.io.File;
  * 2016/9/28 13:15
  */
 public class Http {
+    //是否记录日志
     private static boolean isEnableLog = true;
+    //超时时间，单位为秒，默认60秒
+    private static int timeout = 60;
 
-    private static Executor executor = new Executor(true);
-    private static Executor executorWithoutLog = new Executor(false);
+    private static Executor executor = new Executor(true, timeout);
+    private static Executor executorWithoutLog = new Executor(false, timeout);
 
     /**
      * 获取执行器
@@ -31,14 +34,18 @@ public class Http {
      * 屏蔽日志
      */
     public static void blockLog() {
-        isEnableLog = false;
+        if (Http.isEnableLog) {
+            Http.isEnableLog = false;
+        }
     }
 
     /**
      * 解除日志屏蔽
      */
     public static void unblockLog() {
-        isEnableLog = true;
+        if (!Http.isEnableLog) {
+            Http.isEnableLog = true;
+        }
     }
 
     /**
@@ -53,6 +60,17 @@ public class Http {
      */
     public static Executor enablelog() {
         return executor;
+    }
+
+    /**
+     * 设置超时时间，单位为秒
+     */
+    public static void timeout(int timeout) {
+        if (timeout != Http.timeout) {
+            Http.timeout = timeout;
+            executor.timeout(timeout);
+            executorWithoutLog.timeout(timeout);
+        }
     }
 
     /******** get *********/

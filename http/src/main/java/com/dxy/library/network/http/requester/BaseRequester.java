@@ -22,15 +22,19 @@ public abstract class BaseRequester {
     protected int ERROR_CODE = 500;
 
     //是否记录日志
-    protected boolean isLog = true;
+    protected boolean isLog;
 
-    public BaseRequester() {
-    }
+    //超时时间，单位为秒
+    protected int timeout;
 
-    public BaseRequester(boolean isLog) {
+    public BaseRequester(boolean isLog, int timeout) {
         this.isLog = isLog;
+        this.timeout = timeout;
     }
 
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
+    }
 
     /******** 异步请求 *********/
 
