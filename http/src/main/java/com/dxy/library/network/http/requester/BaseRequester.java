@@ -97,9 +97,9 @@ public abstract class BaseRequester {
         String paramStr = params == null ? "" : ", params: " + GsonUtil.to(params);
         String bodyStr = t == null ? "" : ", body: " + GsonUtil.to(t);
         if (e != null) {
-            log.info("Http Execute Failed, {}", urlStr + responseCodeStr + methodStr + headerStr + paramStr + bodyStr);
+            log.info("Http Execute Failed {}", urlStr + responseCodeStr + methodStr + headerStr + paramStr + bodyStr);
         } else {
-            log.info("Http Execute Successed, {}", urlStr + responseCodeStr + methodStr + headerStr + paramStr + bodyStr);
+            log.info("Http Execute Successed {}", urlStr + responseCodeStr + methodStr + headerStr + paramStr + bodyStr);
         }
     }
 
