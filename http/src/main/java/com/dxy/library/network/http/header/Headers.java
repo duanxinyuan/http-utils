@@ -1,6 +1,6 @@
 package com.dxy.library.network.http.header;
 
-import com.dxy.library.json.GsonUtil;
+import com.dxy.library.json.gson.GsonUtil;
 import com.dxy.library.network.http.param.Params;
 
 /**

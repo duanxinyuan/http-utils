@@ -8,7 +8,7 @@ Http：
 <dependency>
     <groupId>com.github.duanxinyuan</groupId>
     <artifactId>network-http</artifactId>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
 </dependency>
 ```
 

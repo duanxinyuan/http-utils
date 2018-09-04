@@ -1,7 +1,7 @@
 package com.dxy.library.network.http.param;
 
 
-import com.dxy.library.json.GsonUtil;
+import com.dxy.library.json.gson.GsonUtil;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 

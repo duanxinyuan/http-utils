@@ -1,6 +1,6 @@
 package com.dxy.library.network.http.requester;
 
-import com.dxy.library.json.GsonUtil;
+import com.dxy.library.json.gson.GsonUtil;
 import com.dxy.library.network.http.callback.RequestCallback;
 import com.dxy.library.network.http.constant.Method;
 import com.dxy.library.network.http.header.Headers;

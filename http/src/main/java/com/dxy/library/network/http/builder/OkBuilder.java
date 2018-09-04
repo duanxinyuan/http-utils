@@ -1,7 +1,7 @@
 package com.dxy.library.network.http.builder;
 
 
-import com.dxy.library.json.GsonUtil;
+import com.dxy.library.json.gson.GsonUtil;
 import com.dxy.library.network.http.constant.Method;
 import com.dxy.library.network.http.param.Params;
 import com.dxy.library.network.http.header.Headers;
