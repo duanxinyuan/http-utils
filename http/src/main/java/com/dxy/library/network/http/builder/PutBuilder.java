@@ -17,40 +17,25 @@ public class PutBuilder extends OkBuilder {
         return new PutBuilder();
     }
 
-    /**
-     * 构建put请求的Builder
-     */
     public PutBuilder buildPut(String url, RequestBody body) {
         url(url).put(body);
         return this;
     }
 
-    /**
-     * 构建put请求的Builder
-     */
     public PutBuilder buildPut(String url, Params params) {
         url(url).put(getRequestBody(params));
         return this;
     }
 
-    /**
-     * 构建put请求的Builder
-     */
     public PutBuilder buildPut(String url, Headers headers, Params params) {
         url(url).put(getRequestBody(headers, params));
         return this;
     }
 
-    /**
-     * 构建post请求的Builder
-     */
     public <T> PutBuilder buildPut(String url, T t, MediaType type) {
         return buildPut(url, null, t, type);
     }
 
-    /**
-     * 构建post请求的Builder
-     */
     public <T> PutBuilder buildPut(String url, Headers headers, T t, MediaType type) {
         url(url).put(getRequestBody(headers, t, type));
         return this;

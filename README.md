@@ -7,15 +7,16 @@ Http：
 ```xml
 <dependency>
     <groupId>com.github.duanxinyuan</groupId>
-    <artifactId>network-http</artifactId>
-    <version>1.1.2</version>
+    <artifactId>library-network-http</artifactId>
+    <version>1.2.0</version>
 </dependency>
 ```
 
 ## Http使用示例：
-```java
+```text
 Headers headers=new Headers("token","").add("key","").add("k1","v1","k2","v2","k3","v3");
 Params params=new Params("name","").add("key","").add("k1","v1","k2","v2","k3","v3");
+
 
 1、GET：
       //同步请求
@@ -39,6 +40,16 @@ Params params=new Params("name","").add("key","").add("k1","v1","k2","v2","k3","
 
       //POST异步提交JSON：
       Http.postJsonAsync(url, testBean, callback);
+
+      //POST同步上传文件：
+      String s = Http.postJson(url, headers, params, testBean);
+      Result result = Http.postJson(url, testBean, Result.class);
+
+      //POST同步上传文件：
+      Http.postFileAsync(url, testBean, fileparam);
+
+      //POST异步上传文件：
+      Http.postFileAsync(url, testBean, fileparam,callback);
 
 3、PUT：
        //同步请求：
@@ -77,6 +88,7 @@ Params params=new Params("name","").add("key","").add("k1","v1","k2","v2","k3","
 
       //异步下载，targetPath为本地文件存储地址
       Http.downloadAsync(url,targetPath);
+  
       
   关闭日志请求：
   Http.disableLog().get(url, headers, params);
@@ -95,5 +107,4 @@ Params params=new Params("name","").add("key","").add("k1","v1","k2","v2","k3","
          
   开启日志请求，设置超时时间，单位为秒：
   Http.enableLog().timeout(120).get(url, headers, params);
-
 ```

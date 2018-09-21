@@ -18,6 +18,8 @@ public enum Method {
     private int type;
 
     Method(String method, int type) {
+        this.method = method;
+        this.type = type;
     }
 
     public String getMethod() {

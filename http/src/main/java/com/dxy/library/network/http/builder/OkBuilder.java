@@ -1,16 +1,23 @@
 package com.dxy.library.network.http.builder;
 
 
-import com.dxy.library.json.gson.GsonUtil;
 import com.dxy.library.network.http.constant.Method;
-import com.dxy.library.network.http.param.Params;
+import com.dxy.library.network.http.param.FileParam;
+import com.dxy.library.json.gson.GsonUtil;
 import com.dxy.library.network.http.header.Headers;
+import com.dxy.library.network.http.param.Params;
 import okhttp3.*;
+import okhttp3.internal.Util;
+import okio.BufferedSink;
 import okio.ByteString;
+import okio.Okio;
+import okio.Source;
 
-import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.FileNameMap;
 import java.net.URLConnection;
+import java.util.List;
 
 /**
  * 请求构建者基类
@@ -18,35 +25,36 @@ import java.net.URLConnection;
  * 2016/9/28 13:15
  */
 public class OkBuilder extends Request.Builder {
+    private static final MediaType MEDIA_TYPE_APPLICATION_JSON = MediaType.parse("application/json; charset=utf-8");
+    private static final MediaType MEDIA_TYPE_TEXT = MediaType.parse("text/*; charset=utf-8");
+    private static final MediaType MEDIA_TYPE_OCTET_STREAM = MediaType.parse("application/octet-stream; charset=utf-8");
 
-    public static <T> OkBuilder builder(Method method, String url, Headers headers, Params params, T t, String fileKey, File file, String[] fileKeys, File[] files) {
+    public static <T> OkBuilder builder(Method method, String url, Headers headers, Params params, T t, List<FileParam> fileParams) {
         switch (method) {
             case GET:
                 //GET不支持传输Body
                 return GetBuilder.getBuilder().buildGet(url, headers, params);
             case POST:
-                if (null == t && null == fileKey & null == fileKeys) {
-                    return PostBuilder.getBuilder().buildPost(url, headers, params);
+                if (null != fileParams && fileParams.size() > 0) {
+                    return PostBuilder.getBuilder().buildPost(url, headers, params, fileParams);
                 } else {
                     if (null != t) {
-                        return PostBuilder.getBuilder().buildPost(url, headers, t, MediaType.parse("application/json; charset=utf-8"));
+                        return PostBuilder.getBuilder().buildPost(url, headers, t, MEDIA_TYPE_APPLICATION_JSON);
+                    } else {
+                        return PostBuilder.getBuilder().buildPost(url, headers, params);
                     }
-                    if (null != fileKey) {
-                        return PostBuilder.getBuilder().buildPost(url, fileKey, file, params);
-                    }
-                    return PostBuilder.getBuilder().buildPost(url, fileKeys, files, params);
                 }
             case PUT:
                 if (null == t) {
                     return PutBuilder.getBuilder().buildPut(url, headers, params);
                 } else {
-                    return PutBuilder.getBuilder().buildPut(url, headers, t, MediaType.parse("application/json; charset=utf-8"));
+                    return PutBuilder.getBuilder().buildPut(url, headers, t, MEDIA_TYPE_APPLICATION_JSON);
                 }
             case PATCH:
                 if (null == t) {
                     return PatchBuilder.getBuilder().buildPatch(url, headers, params);
                 } else {
-                    return PatchBuilder.getBuilder().buildPatch(url, headers, t, MediaType.parse("application/json; charset=utf-8"));
+                    return PatchBuilder.getBuilder().buildPatch(url, headers, t, MEDIA_TYPE_APPLICATION_JSON);
                 }
             case DELETE:
                 //DELETE不支持传输Body
@@ -87,40 +95,77 @@ public class OkBuilder extends Request.Builder {
         return builder.build();
     }
 
-    RequestBody getRequestBody(File[] files, String[] fileKeys, Params params) {
+    RequestBody getRequestBody(Headers headers, Params params, List<FileParam> fileParams) {
+        addHeader(headers);
         MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
         addFormDataPart(builder, params);
-        if (files != null) {
-            RequestBody fileBody;
-            for (int i = 0; i < files.length; i++) {
-                File file = files[i];
-                String fileName = file.getName();
-                fileBody = RequestBody.create(MediaType.parse(guessMimeType(fileName)), file);
-                builder.addFormDataPart(fileKeys[i], fileName, fileBody);
+        if (fileParams != null && fileParams.size() > 0) {
+            for (FileParam fileParam : fileParams) {
+                addFormDataPart(builder, fileParam);
             }
         }
         return builder.build();
     }
 
-    RequestBody getRequestBody(File file, String fileKey, Params params) {
+    RequestBody getRequestBody(Headers headers, Params params, FileParam fileParam) {
+        addHeader(headers);
         MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
         addFormDataPart(builder, params);
-        if (null == file || null == fileKey) {
-            return null;
-        }
-        String fileName = file.getName();
-        RequestBody fileBody = RequestBody.create(MediaType.parse(guessMimeType(fileName)), file);
-        builder.addFormDataPart(fileKey, fileName, fileBody);
+        addFormDataPart(builder, fileParam);
         return builder.build();
     }
 
-    private String guessMimeType(String path) {
+    private void addFormDataPart(MultipartBody.Builder builder, FileParam fileParam) {
+        if (null == fileParam) {
+            return;
+        }
+        if (fileParam.getFile() != null) {
+            String fileName = fileParam.getFile().getName();
+            RequestBody fileBody = RequestBody.create(guessMimeType(fileName), fileParam.getFile());
+            builder.addFormDataPart(fileParam.getKey(), fileName, fileBody);
+        } else {
+            RequestBody fileBody = getRequestBody(fileParam.getInputStream());
+            builder.addFormDataPart(fileParam.getKey(), fileParam.getKey(), fileBody);
+        }
+    }
+
+    private MediaType guessMimeType(String path) {
         FileNameMap fileNameMap = URLConnection.getFileNameMap();
         String contentTypeFor = fileNameMap.getContentTypeFor(path);
         if (contentTypeFor == null) {
-            contentTypeFor = "application/octet-stream";
+            return MEDIA_TYPE_OCTET_STREAM;
+        } else {
+            return MediaType.parse(contentTypeFor);
         }
-        return contentTypeFor;
+    }
+
+    private RequestBody getRequestBody(InputStream inputStream) {
+        return new RequestBody() {
+            @Override
+            public MediaType contentType() {
+                return MEDIA_TYPE_TEXT;
+            }
+
+            @Override
+            public long contentLength() {
+                try {
+                    return inputStream.available();
+                } catch (IOException e) {
+                    return 0;
+                }
+            }
+
+            @Override
+            public void writeTo(BufferedSink sink) throws IOException {
+                Source source = null;
+                try {
+                    source = Okio.source(inputStream);
+                    sink.writeAll(source);
+                } finally {
+                    Util.closeQuietly(source);
+                }
+            }
+        };
     }
 
     /**

@@ -1,13 +1,14 @@
 package com.dxy.library.network.http.executor;
 
+import com.dxy.library.network.http.requester.OkHttpRequester;
+import com.google.gson.reflect.TypeToken;
 import com.dxy.library.network.http.callback.RequestCallback;
 import com.dxy.library.network.http.constant.Method;
 import com.dxy.library.network.http.header.Headers;
+import com.dxy.library.network.http.param.FileParam;
 import com.dxy.library.network.http.param.Params;
-import com.dxy.library.network.http.requester.OkHttpRequester;
-import com.google.gson.reflect.TypeToken;
 
-import java.io.File;
+import java.util.List;
 
 /**
  * Http执行器
@@ -35,7 +36,7 @@ public class Executor {
     public Executor timeout(int timeout) {
         if (timeout != this.timeout) {
             this.timeout = timeout;
-            if (null != instance) {
+            if (instance != null) {
                 instance.setTimeout(timeout);
             }
         }
@@ -100,7 +101,7 @@ public class Executor {
     }
 
     public <V> V get(String url, Headers headers, Params params, TypeToken<V> typeToken) {
-        return getExecutorInstance().excute(Method.GET, url, headers, params, typeToken);
+        return getExecutorInstance().excute(Method.GET, url, headers, params, typeToken.getType());
     }
 
     public void getAsync(String url) {
@@ -159,7 +160,47 @@ public class Executor {
     }
 
     public <V> V post(String url, Headers headers, Params params, TypeToken<V> typeToken) {
-        return getExecutorInstance().excute(Method.POST, url, headers, params, typeToken);
+        return getExecutorInstance().excute(Method.POST, url, headers, params, typeToken.getType());
+    }
+
+    public <V> V postFile(String url, FileParam fileParam, Class<V> c) {
+        return postFile(url, null, null, fileParam, c);
+    }
+
+    public <V> V postFile(String url, FileParam fileParam, TypeToken<V> typeToken) {
+        return postFile(url, null, null, fileParam, typeToken);
+    }
+
+    public <V> V postFile(String url, Params params, FileParam fileParam, Class<V> c) {
+        return postFile(url, null, params, fileParam, c);
+    }
+
+    public <V> V postFile(String url, Params params, FileParam fileParam, TypeToken<V> typeToken) {
+        return postFile(url, null, params, fileParam, typeToken);
+    }
+
+    public <V> V postFile(String url, Params params, List<FileParam> fileParams, Class<V> c) {
+        return postFile(url, null, params, fileParams, c);
+    }
+
+    public <V> V postFile(String url, Params params, List<FileParam> fileParams, TypeToken<V> typeToken) {
+        return postFile(url, null, params, fileParams, typeToken);
+    }
+
+    public <V> V postFile(String url, Headers headers, Params params, FileParam fileParam, Class<V> c) {
+        return getExecutorInstance().excute(url, headers, params, fileParam, c);
+    }
+
+    public <V> V postFile(String url, Headers headers, Params params, FileParam fileParam, TypeToken<V> typeToken) {
+        return getExecutorInstance().excute(url, headers, params, fileParam, typeToken.getType());
+    }
+
+    public <V> V postFile(String url, Headers headers, Params params, List<FileParam> fileParams, Class<V> c) {
+        return getExecutorInstance().excute(url, headers, params, fileParams, c);
+    }
+
+    public <V> V postFile(String url, Headers headers, Params params, List<FileParam> fileParams, TypeToken<V> typeToken) {
+        return getExecutorInstance().excute(url, headers, params, fileParams, typeToken.getType());
     }
 
     public <T> String postJson(String url, T t) {
@@ -199,7 +240,7 @@ public class Executor {
     }
 
     public <V, T> V postJson(String url, Headers headers, Params params, T t, TypeToken<V> typeToken) {
-        return getExecutorInstance().excute(Method.POST, url, headers, params, t, typeToken);
+        return getExecutorInstance().excute(Method.POST, url, headers, params, t, typeToken.getType());
     }
 
     public void postAsync(String url, RequestCallback callback) {
@@ -226,24 +267,24 @@ public class Executor {
         getExecutorInstance().enqueue(Method.POST, url, headers, params, callback);
     }
 
-    public void postFileAsync(String url, String fileKey, File file, RequestCallback callback) {
-        postFileAsync(url, null, null, fileKey, file, callback);
+    public void postFileAsync(String url, FileParam fileParam, RequestCallback callback) {
+        postFileAsync(url, null, null, fileParam, callback);
     }
 
-    public void postFileAsync(String url, Params params, String fileKey, File file, RequestCallback callback) {
-        postFileAsync(url, null, params, fileKey, file, callback);
+    public void postFileAsync(String url, Params params, FileParam fileParam, RequestCallback callback) {
+        postFileAsync(url, null, params, fileParam, callback);
     }
 
-    public void postFileAsync(String url, Params params, String[] fileKeys, File[] files, RequestCallback callback) {
-        postFileAsync(url, null, params, fileKeys, files, callback);
+    public void postFileAsync(String url, Params params, List<FileParam> fileParams, RequestCallback callback) {
+        postFileAsync(url, null, params, fileParams, callback);
     }
 
-    public void postFileAsync(String url, Headers headers, Params params, String fileKey, File file, RequestCallback callback) {
-        getExecutorInstance().enqueue(url, headers, params, fileKey, file, callback);
+    public void postFileAsync(String url, Headers headers, Params params, FileParam fileParam, RequestCallback callback) {
+        getExecutorInstance().enqueue(url, headers, params, fileParam, callback);
     }
 
-    public void postFileAsync(String url, Headers headers, Params params, String[] fileKeys, File[] files, RequestCallback callback) {
-        getExecutorInstance().enqueue(url, headers, params, fileKeys, files, callback);
+    public void postFileAsync(String url, Headers headers, Params params, List<FileParam> fileParams, RequestCallback callback) {
+        getExecutorInstance().enqueue(url, headers, params, fileParams, callback);
     }
 
     public <T> void postJsonAsync(String url, T t) {
@@ -314,7 +355,7 @@ public class Executor {
     }
 
     public <V> V put(String url, Headers headers, Params params, TypeToken<V> typeToken) {
-        return getExecutorInstance().excute(Method.PUT, url, headers, params, typeToken);
+        return getExecutorInstance().excute(Method.PUT, url, headers, params, typeToken.getType());
     }
 
     public <T> String putJson(String url, T t) {
@@ -354,7 +395,7 @@ public class Executor {
     }
 
     public <V, T> V putJson(String url, Headers headers, Params params, T t, TypeToken<V> typeToken) {
-        return getExecutorInstance().excute(Method.PUT, url, headers, params, t, typeToken);
+        return getExecutorInstance().excute(Method.PUT, url, headers, params, t, typeToken.getType());
     }
 
     public <T> void putJsonAsync(String url, T t) {
@@ -437,7 +478,7 @@ public class Executor {
     }
 
     public <V> V patch(String url, Headers headers, Params params, TypeToken<V> typeToken) {
-        return getExecutorInstance().excute(Method.PATCH, url, headers, params, typeToken);
+        return getExecutorInstance().excute(Method.PATCH, url, headers, params, typeToken.getType());
     }
 
     public void patchAsync(String url, RequestCallback callback) {
@@ -508,7 +549,7 @@ public class Executor {
     }
 
     public <V> V delete(String url, Headers headers, Params params, TypeToken<V> typeToken) {
-        return getExecutorInstance().excute(Method.DELETE, url, headers, params, typeToken);
+        return getExecutorInstance().excute(Method.DELETE, url, headers, params, typeToken.getType());
     }
 
     public void deleteAsync(String url, RequestCallback callback) {

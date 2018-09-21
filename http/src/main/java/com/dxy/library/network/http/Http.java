@@ -3,11 +3,12 @@ package com.dxy.library.network.http;
 
 import com.dxy.library.network.http.callback.RequestCallback;
 import com.dxy.library.network.http.executor.Executor;
+import com.dxy.library.network.http.param.FileParam;
+import com.google.gson.reflect.TypeToken;
 import com.dxy.library.network.http.header.Headers;
 import com.dxy.library.network.http.param.Params;
-import com.google.gson.reflect.TypeToken;
 
-import java.io.File;
+import java.util.List;
 
 /**
  * Http执行类，默认开启日志，不想开启日志可以调用log方法设置log，或者屏蔽log
@@ -34,18 +35,14 @@ public class Http {
      * 屏蔽日志
      */
     public static void blockLog() {
-        if (Http.isEnableLog) {
-            Http.isEnableLog = false;
-        }
+        isEnableLog = false;
     }
 
     /**
      * 解除日志屏蔽
      */
     public static void unblockLog() {
-        if (!Http.isEnableLog) {
-            Http.isEnableLog = true;
-        }
+        isEnableLog = true;
     }
 
     /**
@@ -182,6 +179,66 @@ public class Http {
         return getExecutor().post(url, headers, params, typeToken);
     }
 
+    public static String postFile(String url, FileParam fileParam) {
+        return getExecutor().postFile(url, null, null, fileParam, String.class);
+    }
+
+    public static <V> V postFile(String url, FileParam fileParam, Class<V> c) {
+        return getExecutor().postFile(url, null, null, fileParam, c);
+    }
+
+    public static <V> V postFile(String url, FileParam fileParam, TypeToken<V> typeToken) {
+        return getExecutor().postFile(url, null, null, fileParam, typeToken);
+    }
+
+    public static String postFile(String url, Params params, FileParam fileParam) {
+        return getExecutor().postFile(url, null, params, fileParam, String.class);
+    }
+
+    public static <V> V postFile(String url, Params params, FileParam fileParam, Class<V> c) {
+        return getExecutor().postFile(url, null, params, fileParam, c);
+    }
+
+    public static <V> V postFile(String url, Params params, FileParam fileParam, TypeToken<V> typeToken) {
+        return getExecutor().postFile(url, null, params, fileParam, typeToken);
+    }
+
+    public static String postFile(String url, Params params, List<FileParam> fileParams) {
+        return getExecutor().postFile(url, null, params, fileParams, String.class);
+    }
+
+    public static <V> V postFile(String url, Params params, List<FileParam> fileParams, Class<V> c) {
+        return getExecutor().postFile(url, null, params, fileParams, c);
+    }
+
+    public static <V> V postFile(String url, Params params, List<FileParam> fileParams, TypeToken<V> typeToken) {
+        return getExecutor().postFile(url, null, params, fileParams, typeToken);
+    }
+
+    public static String postFile(String url, Headers headers, Params params, FileParam fileParam) {
+        return getExecutor().postFile(url, headers, params, fileParam, String.class);
+    }
+
+    public static <V> V postFile(String url, Headers headers, Params params, FileParam fileParam, Class<V> c) {
+        return getExecutor().postFile(url, headers, params, fileParam, c);
+    }
+
+    public static <V> V postFile(String url, Headers headers, Params params, FileParam fileParam, TypeToken<V> typeToken) {
+        return getExecutor().postFile(url, headers, params, fileParam, typeToken);
+    }
+
+    public static String postFile(String url, Headers headers, Params params, List<FileParam> fileParams) {
+        return getExecutor().postFile(url, headers, params, fileParams, String.class);
+    }
+
+    public static <V> V postFile(String url, Headers headers, Params params, List<FileParam> fileParams, Class<V> c) {
+        return getExecutor().postFile(url, headers, params, fileParams, c);
+    }
+
+    public static <V> V postFile(String url, Headers headers, Params params, List<FileParam> fileParams, TypeToken<V> typeToken) {
+        return getExecutor().postFile(url, headers, params, fileParams, typeToken);
+    }
+
     public static <T> String postJson(String url, T t) {
         return getExecutor().postJson(url, t, String.class);
     }
@@ -246,24 +303,24 @@ public class Http {
         getExecutor().postAsync(url, headers, params, callback);
     }
 
-    public static void postFileAsync(String url, String fileKey, File file, RequestCallback callback) {
-        getExecutor().postFileAsync(url, fileKey, file, callback);
+    public static void postFileAsync(String url, FileParam fileParam, RequestCallback callback) {
+        getExecutor().postFileAsync(url, fileParam, callback);
     }
 
-    public static void postFileAsync(String url, Params params, String fileKey, File file, RequestCallback callback) {
-        getExecutor().postFileAsync(url, params, fileKey, file, callback);
+    public static void postFileAsync(String url, Params params, FileParam fileParam, RequestCallback callback) {
+        getExecutor().postFileAsync(url, params, fileParam, callback);
     }
 
-    public static void postFileAsync(String url, Params params, String[] fileKeys, File[] files, RequestCallback callback) {
-        getExecutor().postFileAsync(url, params, fileKeys, files, callback);
+    public static void postFileAsync(String url, Params params, List<FileParam> fileParams, RequestCallback callback) {
+        getExecutor().postFileAsync(url, params, fileParams, callback);
     }
 
-    public static void postFileAsync(String url, Headers headers, Params params, String fileKey, File file, RequestCallback callback) {
-        getExecutor().postFileAsync(url, headers, params, fileKey, file, callback);
+    public static void postFileAsync(String url, Headers headers, Params params, FileParam fileParam, RequestCallback callback) {
+        getExecutor().postFileAsync(url, headers, params, fileParam, callback);
     }
 
-    public static void postFileAsync(String url, Headers headers, Params params, String[] fileKeys, File[] files, RequestCallback callback) {
-        getExecutor().postFileAsync(url, headers, params, fileKeys, files, callback);
+    public static void postFileAsync(String url, Headers headers, Params params, List<FileParam> fileParams, RequestCallback callback) {
+        getExecutor().postFileAsync(url, headers, params, fileParams, callback);
     }
 
     public static <T> void postJsonAsync(String url, T t) {

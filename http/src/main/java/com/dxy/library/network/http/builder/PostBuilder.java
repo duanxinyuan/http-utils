@@ -1,12 +1,13 @@
 package com.dxy.library.network.http.builder;
 
 
+import com.dxy.library.network.http.param.FileParam;
 import com.dxy.library.network.http.header.Headers;
 import com.dxy.library.network.http.param.Params;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 
-import java.io.File;
+import java.util.List;
 
 /**
  * Post请求构建者
@@ -19,66 +20,42 @@ public class PostBuilder extends OkBuilder {
         return new PostBuilder();
     }
 
-    /**
-     * 构建post请求的Builder
-     */
     public PostBuilder buildPost(String url, RequestBody body) {
         url(url).post(body);
         return this;
     }
 
-    /**
-     * 构建post请求的Builder
-     */
     public PostBuilder buildPost(String url, Params params) {
         url(url).post(getRequestBody(params));
         return this;
     }
 
-    /**
-     * 构建post请求的Builder
-     */
     public PostBuilder buildPost(String url, Headers headers) {
         url(url).post(getRequestBody(headers, null));
         return this;
     }
 
-    /**
-     * 构建post请求的Builder
-     */
     public PostBuilder buildPost(String url, Headers headers, Params params) {
         url(url).post(getRequestBody(headers, params));
         return this;
     }
 
-    /**
-     * 构建post请求的Builder
-     */
     public <T> PostBuilder buildPost(String url, T t, MediaType type) {
         return buildPost(url, null, t, type);
     }
 
-    /**
-     * 构建post请求的Builder
-     */
     public <T> PostBuilder buildPost(String url, Headers headers, T t, MediaType type) {
         url(url).post(getRequestBody(headers, t, type));
         return this;
     }
 
-    /**
-     * 构建post请求的Builder
-     */
-    public PostBuilder buildPost(String url, String[] fileKeys, File[] files, Params params) {
-        url(url).post(getRequestBody(files, fileKeys, params));
+    public PostBuilder buildPost(String url, Headers headers, Params params, List<FileParam> fileParams) {
+        url(url).post(getRequestBody(headers, params, fileParams));
         return this;
     }
 
-    /**
-     * 构建post请求的Builder
-     */
-    public PostBuilder buildPost(String url, String fileKey, File file, Params params) {
-        url(url).post(getRequestBody(file, fileKey, params));
+    public PostBuilder buildPost(String url, Headers headers, FileParam fileParam, Params params) {
+        url(url).post(getRequestBody(headers, params, fileParam));
         return this;
     }
 }

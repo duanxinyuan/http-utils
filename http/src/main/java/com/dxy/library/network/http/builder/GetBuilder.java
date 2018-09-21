@@ -16,17 +16,11 @@ public class GetBuilder extends OkBuilder {
         return new GetBuilder();
     }
 
-    /**
-     * 构建get请求的Builder
-     */
     public GetBuilder buildGet(String url) {
         url(url).get();
         return this;
     }
 
-    /**
-     * 构建get请求的Builder
-     */
     public GetBuilder buildGet(String url, Headers headers) {
         if (null != headers) {
             addHeader(headers);
@@ -35,9 +29,6 @@ public class GetBuilder extends OkBuilder {
         return this;
     }
 
-    /**
-     * 构建get请求的Builder
-     */
     public GetBuilder buildGet(String url, Params params) {
         HttpUrl httpUrl = HttpUrl.parse(url);
         if (null != httpUrl) {
@@ -49,9 +40,6 @@ public class GetBuilder extends OkBuilder {
         return this;
     }
 
-    /**
-     * 构建get请求的Builder
-     */
     public GetBuilder buildGet(String url, Headers headers, Params params) {
         addHeader(headers);
         return buildGet(url, params);

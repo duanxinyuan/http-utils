@@ -14,25 +14,16 @@ public class DeleteBuilder extends OkBuilder {
         return new DeleteBuilder();
     }
 
-    /**
-     * 构建delete请求的Builder
-     */
     public DeleteBuilder buildDelete(String url) {
         url(url).delete();
         return this;
     }
 
-    /**
-     * 构建delete请求的Builder
-     */
     public DeleteBuilder buildDelete(String url, Params params) {
         url(url).delete(getRequestBody(params));
         return this;
     }
 
-    /**
-     * 构建delete请求的Builder
-     */
     public DeleteBuilder buildDelete(String url, Headers headers, Params params) {
         url(url).delete(getRequestBody(headers, params));
         return this;
