@@ -68,8 +68,8 @@
     <dependencies>
         <dependency>
             <groupId>com.github.duanxinyuan</groupId>
-            <artifactId>library-json</artifactId>
-            <version>1.4.1</version>
+            <artifactId>library-json-gson</artifactId>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
