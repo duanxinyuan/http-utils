@@ -20,32 +20,17 @@ public class PostBuilder extends OkBuilder {
         return new PostBuilder();
     }
 
-    public PostBuilder buildPost(String url, RequestBody body) {
-        url(url).post(body);
-        return this;
-    }
-
-    public PostBuilder buildPost(String url, Params params) {
-        url(url).post(getRequestBody(params));
-        return this;
-    }
-
-    public PostBuilder buildPost(String url, Headers headers) {
-        url(url).post(getRequestBody(headers, null));
-        return this;
-    }
-
     public PostBuilder buildPost(String url, Headers headers, Params params) {
         url(url).post(getRequestBody(headers, params));
         return this;
     }
 
-    public <T> PostBuilder buildPost(String url, T t, MediaType type) {
-        return buildPost(url, null, t, type);
-    }
-
-    public <T> PostBuilder buildPost(String url, Headers headers, T t, MediaType type) {
-        url(url).post(getRequestBody(headers, t, type));
+    public <T> PostBuilder buildPost(String url, Headers headers, Params params, T t, MediaType type) {
+        if (null == params || params.size() == 0) {
+            url(url).post(getRequestBody(headers, t, type));
+        } else {
+            url(addQueryParameter(url, params)).post(getRequestBody(headers, t, type));
+        }
         return this;
     }
 

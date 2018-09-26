@@ -9,6 +9,8 @@ import com.dxy.library.network.http.param.Params;
  * 2016/9/28 11:49
  */
 public class Headers extends Params {
+    private static final String CONTENT_TYPE = "Content-Type";
+
     public Headers() {
     }
 
@@ -30,6 +32,19 @@ public class Headers extends Params {
 
     public Headers(String key, Long value) {
         super(key, value);
+    }
+
+    public Headers contentType(String string) {
+        add(CONTENT_TYPE, string);
+        return this;
+    }
+
+    public boolean containsContentType() {
+        return containsKey(CONTENT_TYPE);
+    }
+
+    public String getContentType() {
+        return get(CONTENT_TYPE);
     }
 
     @Override

@@ -3,7 +3,6 @@ package com.dxy.library.network.http.builder;
 
 import com.dxy.library.network.http.header.Headers;
 import com.dxy.library.network.http.param.Params;
-import okhttp3.HttpUrl;
 
 /**
  * Get请求构建者
@@ -16,26 +15,11 @@ public class GetBuilder extends OkBuilder {
         return new GetBuilder();
     }
 
-    public GetBuilder buildGet(String url) {
-        url(url).get();
-        return this;
-    }
-
-    public GetBuilder buildGet(String url, Headers headers) {
-        if (null != headers) {
-            addHeader(headers);
-        }
-        url(url).get();
-        return this;
-    }
-
     public GetBuilder buildGet(String url, Params params) {
-        HttpUrl httpUrl = HttpUrl.parse(url);
-        if (null != httpUrl) {
-            HttpUrl.Builder builder = httpUrl.newBuilder();
-            addQueryParameter(builder, params);
-            httpUrl = builder.build();
-            url(httpUrl).get();
+        if (null == params || params.size() == 0) {
+            url(url).get();
+        } else {
+            url(addQueryParameter(url, params)).get();
         }
         return this;
     }

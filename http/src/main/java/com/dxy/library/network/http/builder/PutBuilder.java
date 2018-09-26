@@ -4,7 +4,6 @@ package com.dxy.library.network.http.builder;
 import com.dxy.library.network.http.header.Headers;
 import com.dxy.library.network.http.param.Params;
 import okhttp3.MediaType;
-import okhttp3.RequestBody;
 
 /**
  * Put请求构建者
@@ -17,27 +16,17 @@ public class PutBuilder extends OkBuilder {
         return new PutBuilder();
     }
 
-    public PutBuilder buildPut(String url, RequestBody body) {
-        url(url).put(body);
-        return this;
-    }
-
-    public PutBuilder buildPut(String url, Params params) {
-        url(url).put(getRequestBody(params));
-        return this;
-    }
-
     public PutBuilder buildPut(String url, Headers headers, Params params) {
         url(url).put(getRequestBody(headers, params));
         return this;
     }
 
-    public <T> PutBuilder buildPut(String url, T t, MediaType type) {
-        return buildPut(url, null, t, type);
-    }
-
-    public <T> PutBuilder buildPut(String url, Headers headers, T t, MediaType type) {
-        url(url).put(getRequestBody(headers, t, type));
+    public <T> PutBuilder buildPut(String url, Headers headers, Params params, T t, MediaType type) {
+        if (null == params || params.size() == 0) {
+            url(url).put(getRequestBody(headers, t, type));
+        } else {
+            url(addQueryParameter(url, params)).put(getRequestBody(headers, t, type));
+        }
         return this;
     }
 }

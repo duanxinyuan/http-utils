@@ -1,10 +1,10 @@
 package com.dxy.library.network.http.builder;
 
 
-import com.dxy.library.network.http.constant.Method;
-import com.dxy.library.network.http.param.FileParam;
 import com.dxy.library.json.gson.GsonUtil;
+import com.dxy.library.network.http.constant.Method;
 import com.dxy.library.network.http.header.Headers;
+import com.dxy.library.network.http.param.FileParam;
 import com.dxy.library.network.http.param.Params;
 import okhttp3.*;
 import okhttp3.internal.Util;
@@ -38,29 +38,37 @@ public class OkBuilder extends Request.Builder {
                 if (null != fileParams && fileParams.size() > 0) {
                     return PostBuilder.getBuilder().buildPost(url, headers, params, fileParams);
                 } else {
-                    if (null != t) {
-                        return PostBuilder.getBuilder().buildPost(url, headers, t, MEDIA_TYPE_APPLICATION_JSON);
-                    } else {
+                    if (null == t) {
                         return PostBuilder.getBuilder().buildPost(url, headers, params);
+                    } else {
+                        return PostBuilder.getBuilder().buildPost(url, headers, params, t, getMediaType(headers));
                     }
                 }
             case PUT:
                 if (null == t) {
                     return PutBuilder.getBuilder().buildPut(url, headers, params);
                 } else {
-                    return PutBuilder.getBuilder().buildPut(url, headers, t, MEDIA_TYPE_APPLICATION_JSON);
+                    return PutBuilder.getBuilder().buildPut(url, headers, params, t, getMediaType(headers));
                 }
             case PATCH:
                 if (null == t) {
                     return PatchBuilder.getBuilder().buildPatch(url, headers, params);
                 } else {
-                    return PatchBuilder.getBuilder().buildPatch(url, headers, t, MEDIA_TYPE_APPLICATION_JSON);
+                    return PatchBuilder.getBuilder().buildPatch(url, headers, params, t, getMediaType(headers));
                 }
             case DELETE:
                 //DELETE不支持传输Body
                 return DeleteBuilder.getBuilder().buildDelete(url, headers, params);
             default:
                 return null;
+        }
+    }
+
+    private static MediaType getMediaType(Headers headers) {
+        if (headers == null || !headers.containsContentType()) {
+            return MEDIA_TYPE_APPLICATION_JSON;
+        } else {
+            return MediaType.parse(headers.getContentType());
         }
     }
 
@@ -201,13 +209,18 @@ public class OkBuilder extends Request.Builder {
         }
     }
 
-    void addQueryParameter(HttpUrl.Builder builder, Params params) {
-        if (null != params && params.size() > 0) {
+    HttpUrl addQueryParameter(String url, Params params) {
+        HttpUrl httpUrl = HttpUrl.parse(url);
+        if (null != httpUrl && null != params && params.size() > 0) {
+            HttpUrl.Builder builder = httpUrl.newBuilder();
             params.forEach((k, v) -> {
                 if (null != k && null != v) {
                     builder.addQueryParameter(k, v);
                 }
             });
+            return builder.build();
+        } else {
+            return httpUrl;
         }
     }
 

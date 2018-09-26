@@ -17,32 +17,17 @@ public class PatchBuilder extends OkBuilder {
         return new PatchBuilder();
     }
 
-    public PatchBuilder buildPatch(String url, RequestBody body) {
-        url(url).patch(body);
-        return this;
-    }
-
-    public PatchBuilder buildPatch(String url, Headers headers) {
-        url(url).patch(getRequestBody(headers));
-        return this;
-    }
-
-    public PatchBuilder buildPatch(String url, Params params) {
-        url(url).patch(getRequestBody(params));
-        return this;
-    }
-
     public PatchBuilder buildPatch(String url, Headers headers, Params params) {
         url(url).patch(getRequestBody(headers, params));
         return this;
     }
 
-    public <T> PatchBuilder buildPatch(String url, T t, MediaType type) {
-        return buildPatch(url, null, t, type);
-    }
-
-    public <T> PatchBuilder buildPatch(String url, Headers headers, T t, MediaType type) {
-        url(url).patch(getRequestBody(headers, t, type));
+    public <T> PatchBuilder buildPatch(String url, Headers headers, Params params, T t, MediaType type) {
+        if (null == params || params.size() == 0) {
+            url(url).patch(getRequestBody(headers, t, type));
+        } else {
+            url(addQueryParameter(url, params)).patch(getRequestBody(headers, t, type));
+        }
         return this;
     }
 
