@@ -60,14 +60,14 @@ public class HttpTest {
         System.out.println(" http://127.0.0.1:20101/fs/download?module=mobeye&path=" + params.get("path"));
 
         InputStream inputStream = HttpTest.class.getClassLoader().getResourceAsStream("test.txt");
-        FileParam fileParam1 = new FileParam("file", inputStream);
+        FileParam fileParam1 = new FileParam("file", "test.txt", inputStream);
         params.add("path", "user/test/test_" + Clock.systemUTC().millis());
         System.out.println(" http://127.0.0.1:20101/fs/download?module=mobeye&path=" + params.get("path"));
         String postFile1 = Http.postFile("http://127.0.0.1:20101/fs/upload", params, fileParam1);
         System.out.println(postFile1);
 
         InputStream inputStream2 = HttpTest.class.getClassLoader().getResourceAsStream("test.txt");
-        FileParam fileParam2 = new FileParam("file", inputStream2);
+        FileParam fileParam2 = new FileParam("file", "test.txt", inputStream2);
         params.add("path", "user/test/test_" + Clock.systemUTC().millis());
         Http.postFileAsync("http://127.0.0.1:20101/fs/upload", params, fileParam2, new RequestCallback() {
             @Override

@@ -128,18 +128,17 @@ public class OkBuilder extends Request.Builder {
             return;
         }
         if (fileParam.getFile() != null) {
-            String fileName = fileParam.getFile().getName();
-            RequestBody fileBody = RequestBody.create(guessMimeType(fileName), fileParam.getFile());
-            builder.addFormDataPart(fileParam.getKey(), fileName, fileBody);
+            RequestBody fileBody = RequestBody.create(guessMimeType(fileParam.getFileName()), fileParam.getFile());
+            builder.addFormDataPart(fileParam.getName(), fileParam.getFileName(), fileBody);
         } else {
             RequestBody fileBody = getRequestBody(fileParam.getInputStream());
-            builder.addFormDataPart(fileParam.getKey(), fileParam.getKey(), fileBody);
+            builder.addFormDataPart(fileParam.getName(), fileParam.getFileName(), fileBody);
         }
     }
 
-    private MediaType guessMimeType(String path) {
+    private MediaType guessMimeType(String fileName) {
         FileNameMap fileNameMap = URLConnection.getFileNameMap();
-        String contentTypeFor = fileNameMap.getContentTypeFor(path);
+        String contentTypeFor = fileNameMap.getContentTypeFor(fileName);
         if (contentTypeFor == null) {
             return MEDIA_TYPE_OCTET_STREAM;
         } else {
