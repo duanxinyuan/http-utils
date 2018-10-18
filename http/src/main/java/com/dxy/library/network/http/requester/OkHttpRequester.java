@@ -217,9 +217,9 @@ public final class OkHttpRequester extends BaseRequester {
             }
             return;
         }
+        FileUtil.createFile(targetPath);
         try (FileOutputStream fileOutputStream = new FileOutputStream(new File(targetPath));
              InputStream inputStream = body.byteStream()) {
-            FileUtil.createFile(targetPath);
             int readLength;
             byte buffer[] = new byte[4 * 1024];
             if (inputStream != null) {
