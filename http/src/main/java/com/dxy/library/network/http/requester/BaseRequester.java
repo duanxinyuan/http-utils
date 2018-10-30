@@ -92,7 +92,7 @@ public abstract class BaseRequester {
      */
     public abstract void download(String url, String targetPath, boolean isAsync);
 
-    <T> void logResult(String url, Method method, Params params, Headers headers, T t, int code, IOException e) {
+    <T> void logResult(String url, Method method, Params params, Headers headers, T t, int code, Exception e) {
         String urlStr = ", url: " + url;
         String responseCodeStr = ", code: " + code;
         String methodStr = ", method: " + method.getMethod();

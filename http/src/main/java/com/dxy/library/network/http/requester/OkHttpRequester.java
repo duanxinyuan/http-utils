@@ -141,17 +141,21 @@ public final class OkHttpRequester extends BaseRequester {
                 if (body == null) {
                     return null;
                 }
-                V v;
-                if (byte[].class == type || Byte[].class == type) {
-                    v = (V) body.bytes();
-                } else if (String.class == type) {
-                    v = (V) body.string();
-                } else if (InputStream.class == type) {
-                    v = (V) body.byteStream();
-                } else if (Reader.class == type) {
-                    v = (V) body.charStream();
-                } else {
-                    v = GsonUtil.from(body.string(), type);
+                V v = null;
+                try {
+                    if (byte[].class == type || Byte[].class == type) {
+                        v = (V) body.bytes();
+                    } else if (String.class == type) {
+                        v = (V) body.string();
+                    } else if (InputStream.class == type) {
+                        v = (V) body.byteStream();
+                    } else if (Reader.class == type) {
+                        v = (V) body.charStream();
+                    } else {
+                        v = GsonUtil.from(body.string(), type);
+                    }
+                } catch (Exception e) {
+                    logResult(url, method, params, headers, t, response.code(), e);
                 }
                 body.close();
                 return v;
