@@ -225,7 +225,7 @@ public final class OkHttpRequester extends BaseRequester {
         try (FileOutputStream fileOutputStream = new FileOutputStream(new File(targetPath));
              InputStream inputStream = body.byteStream()) {
             int readLength;
-            byte buffer[] = new byte[4 * 1024];
+            byte[] buffer = new byte[4 * 1024];
             if (inputStream != null) {
                 while ((readLength = inputStream.read(buffer)) != -1) {
                     fileOutputStream.write(buffer, 0, readLength);
