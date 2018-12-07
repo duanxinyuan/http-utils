@@ -1,8 +1,8 @@
 package com.dxy.library.network.http.param;
 
 
-import com.google.common.collect.Lists;
 import com.dxy.library.json.gson.GsonUtil;
+import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.UnsupportedEncodingException;
@@ -73,7 +73,7 @@ public class Params extends LinkedHashMap<String, String> {
     @Override
     public String put(String key, String value) {
         //键值不能为空
-        if (null != key && null != value) {
+        if (null != key && null != value && !"null".equals(value)) {
             return super.put(key, value);
         }
         return null;
