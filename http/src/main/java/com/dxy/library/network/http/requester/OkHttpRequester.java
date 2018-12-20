@@ -4,18 +4,20 @@ import com.dxy.library.json.gson.GsonUtil;
 import com.dxy.library.network.http.builder.OkBuilder;
 import com.dxy.library.network.http.callback.RequestCallback;
 import com.dxy.library.network.http.constant.Method;
-import com.dxy.library.network.http.param.FileParam;
 import com.dxy.library.network.http.header.Headers;
+import com.dxy.library.network.http.param.FileParam;
 import com.dxy.library.network.http.param.Params;
-import com.dxy.library.network.http.ssl.SSLSocketFactoryImpl;
 import com.dxy.library.network.http.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 
 import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import java.io.*;
 import java.lang.reflect.Type;
-import java.security.KeyStore;
+import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -56,12 +58,23 @@ public final class OkHttpRequester extends BaseRequester {
         builder.readTimeout(timeout, TimeUnit.SECONDS);
         builder.writeTimeout(timeout, TimeUnit.SECONDS);
         try {
-            //配置忽略SSL证书
-            KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
-            trustStore.load(null, null);
-            SSLSocketFactoryImpl ssl = new SSLSocketFactoryImpl(KeyStore.getInstance(KeyStore.getDefaultType()));
+            //配置忽略SSL证书本地校验
+            X509TrustManager trustManager = new X509TrustManager() {
+                @Override
+                public void checkClientTrusted(X509Certificate[] x509Certificates, String s) { }
+
+                @Override
+                public void checkServerTrusted(X509Certificate[] x509Certificates, String s) { }
+
+                @Override
+                public X509Certificate[] getAcceptedIssuers() {
+                    return new X509Certificate[0];
+                }
+            };
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, new TrustManager[]{trustManager}, null);
             HostnameVerifier doNotVerify = (hostname, session) -> true;
-            builder.sslSocketFactory(ssl.getSSLContext().getSocketFactory(), ssl.getTrustManager()).hostnameVerifier(doNotVerify);
+            builder.sslSocketFactory(sslContext.getSocketFactory(), trustManager).hostnameVerifier(doNotVerify);
         } catch (Exception e) {
             if (isLog) {
                 log.error("ssl certificate config error", e);
@@ -136,36 +149,28 @@ public final class OkHttpRequester extends BaseRequester {
             if (isLog) {
                 logResult(url, method, params, headers, t, response.code(), null);
             }
-            if (response != null && (response.isSuccessful() || response.code() == 400)) {
-                ResponseBody body = response.body();
-                if (body == null) {
-                    return null;
-                }
-                V v = null;
-                try {
-                    if (byte[].class == type || Byte[].class == type) {
-                        v = (V) body.bytes();
-                    } else if (String.class == type) {
-                        v = (V) body.string();
-                    } else if (InputStream.class == type) {
-                        v = (V) body.byteStream();
-                    } else if (Reader.class == type) {
-                        v = (V) body.charStream();
-                    } else {
-                        v = GsonUtil.from(body.string(), type);
-                    }
-                } catch (Exception e) {
-                    logResult(url, method, params, headers, t, response.code(), e);
-                }
-                body.close();
-                return v;
-            } else {
-                //log
-                if (isLog) {
-                    logResult(url, method, params, headers, t, ERROR_CODE, null);
-                }
+            ResponseBody body = response.body();
+            if (body == null) {
                 return null;
             }
+            V v = null;
+            try {
+                if (byte[].class == type || Byte[].class == type) {
+                    v = (V) body.bytes();
+                } else if (String.class == type) {
+                    v = (V) body.string();
+                } else if (InputStream.class == type) {
+                    v = (V) body.byteStream();
+                } else if (Reader.class == type) {
+                    v = (V) body.charStream();
+                } else {
+                    v = GsonUtil.from(body.string(), type);
+                }
+            } catch (Exception e) {
+                logResult(url, method, params, headers, t, response.code(), e);
+            }
+            body.close();
+            return v;
         } catch (IOException e) {
             //log
             if (isLog) {

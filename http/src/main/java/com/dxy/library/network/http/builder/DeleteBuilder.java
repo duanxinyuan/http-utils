@@ -14,16 +14,6 @@ public class DeleteBuilder extends OkBuilder {
         return new DeleteBuilder();
     }
 
-    public DeleteBuilder buildDelete(String url) {
-        url(url).delete();
-        return this;
-    }
-
-    public DeleteBuilder buildDelete(String url, Params params) {
-        url(url).delete(getRequestBody(params));
-        return this;
-    }
-
     public DeleteBuilder buildDelete(String url, Headers headers, Params params) {
         url(url).delete(getRequestBody(headers, params));
         return this;

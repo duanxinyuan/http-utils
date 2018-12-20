@@ -75,8 +75,9 @@ public class Params extends LinkedHashMap<String, String> {
         //键值不能为空
         if (null != key && null != value && !"null".equals(value)) {
             return super.put(key, value);
+        } else {
+            return null;
         }
-        return null;
     }
 
     private void addKeyAndValues(String... keyAndValues) {

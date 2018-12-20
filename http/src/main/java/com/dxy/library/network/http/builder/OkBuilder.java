@@ -85,17 +85,6 @@ public class OkBuilder extends Request.Builder {
         }
     }
 
-    RequestBody getRequestBody(Headers headers) {
-        addHeader(headers);
-        return new FormBody.Builder().build();
-    }
-
-    RequestBody getRequestBody(Params params) {
-        FormBody.Builder builder = new FormBody.Builder();
-        addFormData(builder, params);
-        return builder.build();
-    }
-
     RequestBody getRequestBody(Headers headers, Params params) {
         addHeader(headers);
         FormBody.Builder builder = new FormBody.Builder();

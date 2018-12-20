@@ -1,15 +1,14 @@
 package com.dxy.library.network.http.requester;
 
-import com.google.common.collect.Lists;
 import com.dxy.library.json.gson.GsonUtil;
 import com.dxy.library.network.http.callback.RequestCallback;
 import com.dxy.library.network.http.constant.Method;
 import com.dxy.library.network.http.header.Headers;
 import com.dxy.library.network.http.param.FileParam;
 import com.dxy.library.network.http.param.Params;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
 

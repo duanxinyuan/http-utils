@@ -1,11 +1,10 @@
 package com.dxy.library.network.http.builder;
 
 
-import com.dxy.library.network.http.param.FileParam;
 import com.dxy.library.network.http.header.Headers;
+import com.dxy.library.network.http.param.FileParam;
 import com.dxy.library.network.http.param.Params;
 import okhttp3.MediaType;
-import okhttp3.RequestBody;
 
 import java.util.List;
 
@@ -39,8 +38,4 @@ public class PostBuilder extends OkBuilder {
         return this;
     }
 
-    public PostBuilder buildPost(String url, Headers headers, FileParam fileParam, Params params) {
-        url(url).post(getRequestBody(headers, params, fileParam));
-        return this;
-    }
 }

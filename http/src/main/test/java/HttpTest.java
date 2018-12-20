@@ -19,10 +19,10 @@ public class HttpTest {
 
     @Test
     public void testHttp() {
-        System.out.println(Http.enablelog().timeout(300).get("http://www.baidu.com"));
-        System.out.println(Http.disableLog().timeout(300).get("http://www.baidu.com"));
+        System.out.println(Http.enablelog().timeout(300).get("https://www.baidu.com"));
+        System.out.println(Http.disableLog().timeout(300).get("https://www.baidu.com"));
         Http.blockLog();
-        System.out.println(Http.get("http://www.baidu.com"));
+        System.out.println(Http.get("https://www.baidu.com"));
         Http.unblockLog();
         System.out.println(Http.get("http://www.baidu.com"));
         Http.timeout(300);

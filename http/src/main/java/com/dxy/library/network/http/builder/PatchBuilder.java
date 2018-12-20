@@ -4,7 +4,6 @@ package com.dxy.library.network.http.builder;
 import com.dxy.library.network.http.header.Headers;
 import com.dxy.library.network.http.param.Params;
 import okhttp3.MediaType;
-import okhttp3.RequestBody;
 
 /**
  * Patch请求构建者
