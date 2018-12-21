@@ -1,5 +1,6 @@
 import com.dxy.library.network.http.Http;
 import com.dxy.library.network.http.callback.RequestCallback;
+import com.dxy.library.network.http.header.Headers;
 import com.dxy.library.network.http.param.FileParam;
 import com.dxy.library.network.http.param.Params;
 import org.junit.Test;
@@ -16,6 +17,12 @@ import java.util.concurrent.CountDownLatch;
  */
 public class HttpTest {
     private CountDownLatch countDownLatch = new CountDownLatch(1);
+
+    @Test
+    public void testChinese() {
+        Headers headers = new Headers("aaa", "您你");
+        System.out.println(Http.enablelog().timeout(300).get("https://www.baidu.com", headers));
+    }
 
     @Test
     public void testHttp() {

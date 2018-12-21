@@ -15,8 +15,10 @@ import okio.Source;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.FileNameMap;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.List;
 
 /**
@@ -104,34 +106,26 @@ public class OkBuilder extends Request.Builder {
         return builder.build();
     }
 
-    RequestBody getRequestBody(Headers headers, Params params, FileParam fileParam) {
-        addHeader(headers);
-        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-        addFormDataPart(builder, params);
-        addFormDataPart(builder, fileParam);
-        return builder.build();
-    }
-
     private void addFormDataPart(MultipartBody.Builder builder, FileParam fileParam) {
         if (null == fileParam) {
             return;
         }
         if (fileParam.getFile() != null) {
             RequestBody fileBody = RequestBody.create(guessMimeType(fileParam.getFileName()), fileParam.getFile());
-            builder.addFormDataPart(fileParam.getName(), fileParam.getFileName(), fileBody);
+            builder.addFormDataPart(fileParam.getName(), getHeaderValue(fileParam.getFileName()), fileBody);
         } else {
             RequestBody fileBody = getRequestBody(fileParam.getInputStream());
-            builder.addFormDataPart(fileParam.getName(), fileParam.getFileName(), fileBody);
+            builder.addFormDataPart(fileParam.getName(), getHeaderValue(fileParam.getFileName()), fileBody);
         }
     }
 
     private MediaType guessMimeType(String fileName) {
         FileNameMap fileNameMap = URLConnection.getFileNameMap();
-        String contentTypeFor = fileNameMap.getContentTypeFor(fileName);
-        if (contentTypeFor == null) {
+        String contentType = fileNameMap.getContentTypeFor(fileName);
+        if (contentType == null) {
             return MEDIA_TYPE_OCTET_STREAM;
         } else {
-            return MediaType.parse(contentTypeFor);
+            return MediaType.parse(contentType);
         }
     }
 
@@ -169,12 +163,50 @@ public class OkBuilder extends Request.Builder {
      */
     void addHeader(Headers headers) {
         if (null != headers && headers.size() > 0) {
-            headers.forEach((k, v) -> {
-                if (null != k && null != v) {
-                    addHeader(k, v);
+            headers.forEach((key, value) -> {
+                if (null != key && null != value) {
+                    super.addHeader(getHeaderKey(key), getHeaderValue(value));
                 }
             });
         }
+    }
+
+    /**
+     * OkHttp的Header中的value不支持 null、\n和中文等特殊字符
+     * 所以替换 \n ，再使用OkHttp的校验方式，校验不通过的话，就返回URL编码后的字符串
+     */
+    private static String getHeaderValue(String value) {
+        String newValue = value.replace("\n", "");
+        for (int i = 0, length = newValue.length(); i < length; i++) {
+            char c = newValue.charAt(i);
+            if ((c <= '\u001f' && c != '\t') || c >= '\u007f') {
+                try {
+                    return URLEncoder.encode(newValue, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    return newValue;
+                }
+            }
+        }
+        return newValue;
+    }
+
+    /**
+     * OkHttp的Header中的key不支持 null、\n和中文等特殊字符
+     * 所以替换 \n ，再使用OkHttp的校验方式，校验不通过的话，就返回URL编码后的字符串
+     */
+    private static String getHeaderKey(String value) {
+        String newValue = value.replace("\n", "");
+        for (int i = 0, length = newValue.length(); i < length; i++) {
+            char c = newValue.charAt(i);
+            if (c <= '\u0020' || c >= '\u007f') {
+                try {
+                    return URLEncoder.encode(newValue, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    return newValue;
+                }
+            }
+        }
+        return newValue;
     }
 
     private void addFormData(FormBody.Builder builder, Params params) {
@@ -189,9 +221,9 @@ public class OkBuilder extends Request.Builder {
 
     private void addFormDataPart(MultipartBody.Builder builder, Params params) {
         if (null != params && params.size() > 0) {
-            params.forEach((k, v) -> {
-                if (null != k && null != v) {
-                    builder.addFormDataPart(k, v);
+            params.forEach((key, value) -> {
+                if (null != key && null != value) {
+                    builder.addFormDataPart(key, getHeaderValue(value));
                 }
             });
         }
