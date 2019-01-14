@@ -7,7 +7,8 @@ import com.dxy.library.network.http.constant.Method;
 import com.dxy.library.network.http.header.Headers;
 import com.dxy.library.network.http.param.FileParam;
 import com.dxy.library.network.http.param.Params;
-import com.dxy.library.network.http.util.FileUtil;
+import com.dxy.library.network.http.util.FileUtils;
+import com.dxy.library.network.http.util.StreamUtils;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 
@@ -17,6 +18,8 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.io.*;
 import java.lang.reflect.Type;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -58,7 +61,7 @@ public final class OkHttpRequester extends BaseRequester {
         builder.readTimeout(timeout, TimeUnit.SECONDS);
         builder.writeTimeout(timeout, TimeUnit.SECONDS);
         try {
-            //配置忽略SSL证书本地校验
+            //配置忽略SSL证书
             X509TrustManager trustManager = new X509TrustManager() {
                 @Override
                 public void checkClientTrusted(X509Certificate[] x509Certificates, String s) { }
@@ -160,9 +163,21 @@ public final class OkHttpRequester extends BaseRequester {
                 } else if (String.class == type) {
                     v = (V) body.string();
                 } else if (InputStream.class == type) {
-                    v = (V) body.byteStream();
+                    InputStream inputStream = StreamUtils.cloneInputStream(body.byteStream());
+                    v = (V) inputStream;
                 } else if (Reader.class == type) {
-                    v = (V) body.charStream();
+                    InputStream inputStream = StreamUtils.cloneInputStream(body.byteStream());
+                    MediaType contentType = body.contentType();
+                    Charset charset = contentType != null ? contentType.charset(StandardCharsets.UTF_8) : StandardCharsets.UTF_8;
+                    if (null == charset) {
+                        charset = StandardCharsets.UTF_8;
+                    }
+                    if (inputStream != null) {
+                        InputStreamReader inputStreamReader = new InputStreamReader(inputStream, charset);
+                        v = (V) inputStreamReader;
+                    } else {
+                        return null;
+                    }
                 } else {
                     v = GsonUtil.from(body.string(), type);
                 }
@@ -226,15 +241,13 @@ public final class OkHttpRequester extends BaseRequester {
             }
             return;
         }
-        FileUtil.createFile(targetPath);
+        FileUtils.createFile(targetPath);
         try (FileOutputStream fileOutputStream = new FileOutputStream(new File(targetPath));
              InputStream inputStream = body.byteStream()) {
             int readLength;
             byte[] buffer = new byte[4 * 1024];
-            if (inputStream != null) {
-                while ((readLength = inputStream.read(buffer)) != -1) {
-                    fileOutputStream.write(buffer, 0, readLength);
-                }
+            while ((readLength = inputStream.read(buffer)) != -1) {
+                fileOutputStream.write(buffer, 0, readLength);
             }
         } catch (IOException e) {
             if (isLog) {
@@ -244,4 +257,5 @@ public final class OkHttpRequester extends BaseRequester {
             body.close();
         }
     }
+
 }

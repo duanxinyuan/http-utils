@@ -8,7 +8,7 @@ Http：
 <dependency>
     <groupId>com.github.duanxinyuan</groupId>
     <artifactId>library-network-http</artifactId>
-    <version>1.3.7</version>
+    <version>1.3.8</version>
 </dependency>
 ```
 
@@ -89,7 +89,11 @@ Params params=new Params("name","").add("key","").add("k1","v1","k2","v2","k3","
       //异步下载，targetPath为本地文件存储地址
       Http.downloadAsync(url,targetPath);
   
-      
+6、以byte[]、InputStream或者Reader的形式接收数据：
+      InputStream inputStream = Http.get(url, InputStream.class);
+      Reader reader = Http.get(url, Reader.class);
+        
+
   关闭日志请求：
   Http.disableLog().get(url, headers, params);
  

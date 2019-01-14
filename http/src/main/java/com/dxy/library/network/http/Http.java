@@ -128,12 +128,24 @@ public class Http {
         getExecutor().getAsync(url, callback);
     }
 
+    public static void getAsync(String url, Params params) {
+        getExecutor().getAsync(url, params);
+    }
+
     public static void getAsync(String url, Params params, RequestCallback callback) {
         getExecutor().getAsync(url, params, callback);
     }
 
+    public static void getAsync(String url, Headers headers) {
+        getExecutor().getAsync(url, headers);
+    }
+
     public static void getAsync(String url, Headers headers, RequestCallback callback) {
         getExecutor().getAsync(url, headers, callback);
+    }
+
+    public static void getAsync(String url, Headers headers, Params params) {
+        getExecutor().getAsync(url, headers, params);
     }
 
     public static void getAsync(String url, Headers headers, Params params, RequestCallback callback) {
@@ -347,20 +359,40 @@ public class Http {
         getExecutor().postAsync(url, params, callback);
     }
 
+    public static void postAsync(String url, Headers headers, Params params) {
+        getExecutor().postAsync(url, headers, params);
+    }
+
     public static void postAsync(String url, Headers headers, Params params, RequestCallback callback) {
         getExecutor().postAsync(url, headers, params, callback);
+    }
+
+    public static <T> void postAsync(String url, Headers headers, Params params, T t) {
+        getExecutor().postAsync(url, headers, params, t);
     }
 
     public static <T> void postAsync(String url, Headers headers, Params params, T t, RequestCallback callback) {
         getExecutor().postAsync(url, headers, params, t, callback);
     }
 
+    public static void postFileAsync(String url, FileParam fileParam) {
+        getExecutor().postFileAsync(url, fileParam);
+    }
+
     public static void postFileAsync(String url, FileParam fileParam, RequestCallback callback) {
         getExecutor().postFileAsync(url, fileParam, callback);
     }
 
+    public static void postFileAsync(String url, Params params, FileParam fileParam) {
+        getExecutor().postFileAsync(url, params, fileParam);
+    }
+
     public static void postFileAsync(String url, Params params, FileParam fileParam, RequestCallback callback) {
         getExecutor().postFileAsync(url, params, fileParam, callback);
+    }
+
+    public static void postFileAsync(String url, Params params, List<FileParam> fileParams) {
+        getExecutor().postFileAsync(url, params, fileParams);
     }
 
     public static void postFileAsync(String url, Params params, List<FileParam> fileParams, RequestCallback callback) {
@@ -369,6 +401,10 @@ public class Http {
 
     public static void postFileAsync(String url, Headers headers, Params params, FileParam fileParam, RequestCallback callback) {
         getExecutor().postFileAsync(url, headers, params, fileParam, callback);
+    }
+
+    public static void postFileAsync(String url, Headers headers, Params params, List<FileParam> fileParams) {
+        getExecutor().postFileAsync(url, headers, params, fileParams);
     }
 
     public static void postFileAsync(String url, Headers headers, Params params, List<FileParam> fileParams, RequestCallback callback) {
@@ -752,6 +788,10 @@ public class Http {
         return getExecutor().delete(url, headers, params, typeToken);
     }
 
+    public static void deleteAsync(String url) {
+        getExecutor().deleteAsync(url);
+    }
+
     public static void deleteAsync(String url, RequestCallback callback) {
         getExecutor().deleteAsync(url, callback);
     }
@@ -778,12 +818,12 @@ public class Http {
 
     /******** download *********/
 
-    public static void download(String url, String targetDir) {
-        getExecutor().download(url, targetDir);
+    public static void download(String url, String targetPath) {
+        getExecutor().download(url, targetPath);
     }
 
-    public static void downloadAsync(String url, String targetDir) {
-        getExecutor().downloadAsync(url, targetDir);
+    public static void downloadAsync(String url, String targetPath) {
+        getExecutor().downloadAsync(url, targetPath);
     }
 
 }

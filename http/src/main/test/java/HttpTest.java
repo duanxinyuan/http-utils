@@ -6,7 +6,9 @@ import com.dxy.library.network.http.param.Params;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
 import java.net.URL;
 import java.time.Clock;
 import java.util.concurrent.CountDownLatch;
@@ -22,6 +24,14 @@ public class HttpTest {
     public void testChinese() {
         Headers headers = new Headers("aaa", "您你");
         System.out.println(Http.enablelog().timeout(300).get("https://www.baidu.com", headers));
+    }
+
+    @Test
+    public void testInputStream() throws IOException {
+        InputStream inputStream = Http.get("https://www.baidu.com", InputStream.class);
+        System.out.println(inputStream.read());
+        Reader reader = Http.get("https://www.baidu.com", Reader.class);
+        System.out.println(reader.read());
     }
 
     @Test

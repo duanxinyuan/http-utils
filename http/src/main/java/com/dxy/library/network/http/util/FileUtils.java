@@ -10,7 +10,7 @@ import java.io.IOException;
  * 2018/8/24 11:53
  */
 @Slf4j
-public class FileUtil {
+public class FileUtils {
 
     /**
      * 创建文件
