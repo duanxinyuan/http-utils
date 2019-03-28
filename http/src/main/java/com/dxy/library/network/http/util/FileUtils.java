@@ -23,7 +23,7 @@ public class FileUtils {
                 localFile.mkdirs();
             }
         } else {
-            String localPathDir = localPath.substring(0, localPath.lastIndexOf("/"));
+            String localPathDir = localPath.substring(0, localPath.lastIndexOf(File.separator));
             File localPathDirFile = new File(localPathDir);
             if (!localPathDirFile.exists()) {
                 localPathDirFile.mkdirs();
