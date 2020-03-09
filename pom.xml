@@ -37,7 +37,7 @@
 
     <name>http-utils</name>
     <url>https://github.com/duanxinyuan/http-utils</url>
-    <description>网络库，包含Http、Netty、AKKA的封装</description>
+    <description>Http请求工具库（支持全部Http请求方式，支持日志、超时、重试等各种配置）</description>
 
     <scm>
         <connection>scm:git:https://github.com/duanxinyuan/http-utils.git</connection>
