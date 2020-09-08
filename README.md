@@ -7,7 +7,7 @@
 - Http工具类：Http
 
 ## Maven 依赖
-20241010dxy
+
 ```xml
 <dependency>
     <groupId>com.github.duanxinyuan</groupId>
@@ -23,15 +23,19 @@
 #是否默认开启请求日志，默认为true
 http.defaultRequestLogEnable=true
 #默认请求超时时间，单位为秒，默认为60秒
-http.defaultTimout=60
+http.defaultTimoutMillis=60000
 #默认请求失败重试次数，默认为0
 http.defaultRetries=0
 #请求失败重试间隔毫秒数，默认为0
 http.retryIntervalMillis=0
-#最大并发请求数，默认为64
-http.maxRequests=64
-#单个域名最大并发请求数，默认为5
-http.maxRequestsPerHost=5
+#每个地址的最大连接数，默认为5
+http.maxIdleConnections=5
+#连接的存活时间，单位为分钟，默认5分钟
+http.keepAliveDuration=5
+#异步请求的最大并发请求数，默认为64
+http.async.maxRequests=64
+#异步请求的单个域名最大并发请求数，默认为5
+http.async.maxRequestsPerHost=5
 ```
 
 ### yaml 配置示例
@@ -41,15 +45,20 @@ http:
   #是否默认开启请求日志，默认为true
   defaultRequestLogEnable: true
   #默认请求超时时间，单位为秒，默认为60秒
-  defaultTimout: 60
+  defaultTimoutMillis: 60000
   #默认请求失败重试次数，默认为0
   defaultRetries: 0
   #请求失败重试间隔毫秒数，默认为0
   retryIntervalMillis: 0
-  #最大并发请求数，默认为64
-  maxRequests: 64
-  #单个域名最大并发请求数，默认为5
-  maxRequestsPerHost: 5
+  #每个地址的最大连接数，默认为5
+  maxIdleConnections: 5
+  #连接的存活时间，单位为分钟，默认5分钟
+  keepAliveDuration: 5
+  async:
+    #异步请求的最大并发请求数，默认为64
+    maxRequests: 64
+    #异步请求的单个域名最大并发请求数，默认为5
+    maxRequestsPerHost: 5
 ```
 
 ## Http 使用示例
@@ -76,6 +85,8 @@ public class HttpTest{
         String s = Http.get(url, headers, params);
         Result result = Http.get(url, headers, params, Result.class);
 
+        Response response = Http.getForNative(url, headers, params);
+
         //异步请求
         Http.getAsync(url, headers, params, callback);
     }
@@ -88,6 +99,8 @@ public class HttpTest{
         String s = Http.post(url, headers, params);
         Result result = Http.post(url, headers, params, Result.class);
 
+        Response response = Http.postForNative(url, headers, params);
+
         //异步请求：
         Http.postAsync(url, headers, params, callback);
 
@@ -95,12 +108,16 @@ public class HttpTest{
         String s = Http.postJson(url, headers, params, testBean);
         Result result = Http.postJson(url, testBean, Result.class);
 
+        Response response = Http.postJsonForNative(url, testBean);
+
         //POST异步提交JSON：
         Http.postJsonAsync(url, testBean, callback);
 
         //POST同步上传文件：
-        String s = Http.postJson(url, headers, params, testBean);
-        Result result = Http.postJson(url, testBean, Result.class);
+        String s = Http.postFile(url, headers, params, fileparam);
+        Result result = Http.postFile(url, fileparam, Result.class);
+
+        Response response = Http.postFileForNative(url, fileparam);
 
         //POST同步上传文件：
         Http.postFileAsync(url, testBean, fileparam);
@@ -117,12 +134,16 @@ public class HttpTest{
         String s = Http.put(url, headers, params);
         Result result = Http.put(url, headers, params, Result.class);
 
+        Response response = Http.putForNative(url, headers, params);
+
         //异步请求：
         Http.putAsync(url, headers, params, callback);
 
         //PUT同步提交JSON：
         String s = Http.putJson(url, headers, params, testBean);
         Result result = Http.putJson(url, testBean, Result.class);
+
+        Response response = Http.putJsonForNative(url, testBean);
 
         //PUT异步提交JSON：
         Http.putJsonAsync(url, testBean, callback);
@@ -136,6 +157,8 @@ public class HttpTest{
         String s = Http.patch(url, headers, params);
         Result result = Http.patch(url, headers, params, Result.class);
 
+        Response response = Http.patchForNative(url, headers, params);
+
         //异步请求
         Http.patchAsync(url, headers, params, callback);
 
@@ -148,6 +171,8 @@ public class HttpTest{
         //同步请求
         String s = Http.delete(url, headers, params);
         Result result = Http.delete(url, headers, params, Result.class);
+
+        Response response = Http.deleteForNative(url, headers, params);
 
         //异步请求
         Http.deleteAsync(url, headers, params, callback);
@@ -188,7 +213,9 @@ public class HttpTest{
         Http.enableRequestLog().get(url, headers, params);
 
         //设置请求超时时间，单位为秒：
-        Http.timeout(100).get(url, headers, params);
+        Http.timeout(300).get(url, headers, params);
+        Http.timeout(5, TimeUnit.MINUTES).get(url, headers, params);
+        Http.timeoutMillis(3000).get(url, headers, params);
 
         //设置失败重试次数
         Http.retries(100).get(url, headers, params);

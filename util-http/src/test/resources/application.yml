@@ -1,0 +1,19 @@
+http:
+  #是否默认开启请求日志，默认为true
+  defaultRequestLogEnable: true
+  #默认请求超时时间，单位为秒，默认为60秒
+  defaultTimoutMillis: 60000
+  #默认请求失败重试次数，默认为0
+  defaultRetries: 0
+  #请求失败重试间隔毫秒数，默认为0
+  retryIntervalMillis: 0
+  #每个地址的最大连接数，默认为5
+  maxIdleConnections: 5
+  #连接的存活时间，单位为分钟，默认5分钟
+  keepAliveDuration: 5
+  async:
+    #异步请求的最大并发请求数，默认为64
+    maxRequests: 64
+    #异步请求的单个域名最大并发请求数，默认为5
+    maxRequestsPerHost: 5
+
