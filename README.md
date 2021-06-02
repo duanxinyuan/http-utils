@@ -12,6 +12,7 @@
 <dependency>
     <groupId>com.github.duanxinyuan</groupId>
     <artifactId>util-http</artifactId>
+    <version>1.2.0</version>
 </dependency>
 ```
 
