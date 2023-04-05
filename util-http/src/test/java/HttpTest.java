@@ -54,17 +54,6 @@ public class HttpTest {
 
     @Test
     public void testHttp() {
-        Response getForNative = Http.getForNative("https://www.baidu.com");
-        Assert.assertEquals(getForNative.code(), 200);
-        System.out.println(Http.serialize(getForNative, String.class));
-        System.out.println(Http.serialize(Http.postForNative("https://www.baidu.com"), String.class));
-        System.out.println(Http.serialize(Http.putForNative("https://www.baidu.com"), String.class));
-        System.out.println(Http.serialize(Http.patchForNative("https://www.baidu.com"), String.class));
-        System.out.println(Http.serialize(Http.deleteForNative("https://www.baidu.com"), String.class));
-
-        Response response = Http.execute(Method.POST, "http://baidu.com?q=123", null, null, new ByteArrayInputStream("test".getBytes(StandardCharsets.UTF_8)), null);
-        Assert.assertEquals(response.code(), 200);
-        System.out.println(Http.serialize(response, String.class));
         System.out.println(Http.execute(Method.POST, "http://baidu.com?q=123", null, null, null, null, String.class));
 
         System.out.println(Http.timeoutMillis(300).get("https://www.baidu.com"));

@@ -1,7 +1,10 @@
 package com.dxy.library.network.http;
 
+import java.io.OutputStream;
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.dxy.library.network.http.callback.RequestCallback;
 import com.dxy.library.network.http.constant.Method;
 import com.dxy.library.network.http.executor.Executor;
@@ -12,12 +15,7 @@ import com.dxy.library.network.http.param.Params;
 import com.dxy.library.network.http.serializer.DefaultSerializer;
 import com.dxy.library.network.http.serializer.HttpSerializer;
 import com.dxy.library.util.config.ConfigUtils;
-import okhttp3.Response;
-
-import java.io.OutputStream;
-import java.lang.reflect.Type;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 /**
  * Http执行类，默认开启日志，不想开启日志可以调用log方法设置log，或者屏蔽log
@@ -212,22 +210,6 @@ public final class Http {
         return DEFAULT_EXECUTOR.get(url, headers, params, type);
     }
 
-    public static Response getForNative(String url) {
-        return DEFAULT_EXECUTOR.getForNative(url);
-    }
-
-    public static Response getForNative(String url, Headers headers) {
-        return DEFAULT_EXECUTOR.getForNative(url, headers);
-    }
-
-    public static Response getForNative(String url, Params params) {
-        return DEFAULT_EXECUTOR.getForNative(url, params);
-    }
-
-    public static Response getForNative(String url, Headers headers, Params params) {
-        return DEFAULT_EXECUTOR.getForNative(url, headers, params);
-    }
-
     public static void getAsync(String url) {
         DEFAULT_EXECUTOR.getAsync(url);
     }
@@ -331,26 +313,6 @@ public final class Http {
         return DEFAULT_EXECUTOR.post(url, headers, params, body, type);
     }
 
-    public static Response postForNative(String url) {
-        return DEFAULT_EXECUTOR.postForNative(url);
-    }
-
-    public static Response postForNative(String url, Headers headers) {
-        return DEFAULT_EXECUTOR.postForNative(url, headers);
-    }
-
-    public static Response postForNative(String url, Params params) {
-        return DEFAULT_EXECUTOR.postForNative(url, params);
-    }
-
-    public static Response postForNative(String url, Headers headers, Params params) {
-        return DEFAULT_EXECUTOR.postForNative(url, headers, params);
-    }
-
-    public static <T> Response postForNative(String url, Headers headers, Params params, T body) {
-        return DEFAULT_EXECUTOR.postForNative(url, headers, params, body);
-    }
-
     public static String postFile(String url, FileParam fileParam) {
         return DEFAULT_EXECUTOR.postFile(url, fileParam);
     }
@@ -419,22 +381,6 @@ public final class Http {
         return DEFAULT_EXECUTOR.postFile(url, headers, params, fileParams, type);
     }
 
-    public static Response postFileForNative(String url, FileParam fileParam) {
-        return DEFAULT_EXECUTOR.postFileForNative(url, fileParam);
-    }
-
-    public static Response postFileForNative(String url, Params params, FileParam fileParam) {
-        return DEFAULT_EXECUTOR.postFileForNative(url, params, fileParam);
-    }
-
-    public static Response postFileForNative(String url, Headers headers, Params params, FileParam fileParam) {
-        return DEFAULT_EXECUTOR.postFileForNative(url, headers, params, fileParam);
-    }
-
-    public static Response postFileForNative(String url, Headers headers, Params params, List<FileParam> fileParams) {
-        return DEFAULT_EXECUTOR.postFileForNative(url, headers, params, fileParams);
-    }
-
     public static <T> String postJson(String url, T body) {
         return DEFAULT_EXECUTOR.postJson(url, body);
     }
@@ -485,22 +431,6 @@ public final class Http {
 
     public static <V, T> V postJson(String url, Headers headers, Params params, T body, Type type) {
         return DEFAULT_EXECUTOR.postJson(url, headers, params, body, type);
-    }
-
-    public static <T> Response postJsonForNative(String url, T body) {
-        return DEFAULT_EXECUTOR.postJsonForNative(url, body);
-    }
-
-    public static <T> Response postJsonForNative(String url, Headers headers, T body) {
-        return DEFAULT_EXECUTOR.postJsonForNative(url, headers, body);
-    }
-
-    public static <T> Response postJsonForNative(String url, Params params, T body) {
-        return DEFAULT_EXECUTOR.postJsonForNative(url, params, body);
-    }
-
-    public static <T> Response postJsonForNative(String url, Headers headers, Params params, T body) {
-        return DEFAULT_EXECUTOR.postJsonForNative(url, headers, params, body);
     }
 
     public static void postAsync(String url) {
@@ -690,26 +620,6 @@ public final class Http {
         return DEFAULT_EXECUTOR.put(url, headers, params, body, type);
     }
 
-    public static Response putForNative(String url) {
-        return DEFAULT_EXECUTOR.putForNative(url);
-    }
-
-    public static Response putForNative(String url, Headers headers) {
-        return DEFAULT_EXECUTOR.putForNative(url, headers);
-    }
-
-    public static Response putForNative(String url, Params params) {
-        return DEFAULT_EXECUTOR.putForNative(url, params);
-    }
-
-    public static Response putForNative(String url, Headers headers, Params params) {
-        return DEFAULT_EXECUTOR.putForNative(url, headers, params);
-    }
-
-    public static <T> Response putForNative(String url, Headers headers, Params params, T body) {
-        return DEFAULT_EXECUTOR.putForNative(url, headers, params, body);
-    }
-
     public static <T> String putJson(String url, T body) {
         return DEFAULT_EXECUTOR.putJson(url, body);
     }
@@ -760,22 +670,6 @@ public final class Http {
 
     public static <V, T> V putJson(String url, Headers headers, Params params, T body, Type type) {
         return DEFAULT_EXECUTOR.putJson(url, headers, params, body, type);
-    }
-
-    public static <T> Response putJsonForNative(String url, T body) {
-        return DEFAULT_EXECUTOR.putJsonForNative(url, body);
-    }
-
-    public static <T> Response putJsonForNative(String url, Headers headers, T body) {
-        return DEFAULT_EXECUTOR.putJsonForNative(url, headers, body);
-    }
-
-    public static <T> Response putJsonForNative(String url, Params params, T body) {
-        return DEFAULT_EXECUTOR.putJsonForNative(url, params, body);
-    }
-
-    public static <T> Response putJsonForNative(String url, Headers headers, Params params, T body) {
-        return DEFAULT_EXECUTOR.putJsonForNative(url, headers, params, body);
     }
 
     public static void putAsync(String url) {
@@ -913,26 +807,6 @@ public final class Http {
         return DEFAULT_EXECUTOR.patch(url, headers, params, body, type);
     }
 
-    public static Response patchForNative(String url) {
-        return DEFAULT_EXECUTOR.patchForNative(url);
-    }
-
-    public static Response patchForNative(String url, Headers headers) {
-        return DEFAULT_EXECUTOR.patchForNative(url, headers);
-    }
-
-    public static Response patchForNative(String url, Params params) {
-        return DEFAULT_EXECUTOR.patchForNative(url, params);
-    }
-
-    public static Response patchForNative(String url, Headers headers, Params params) {
-        return DEFAULT_EXECUTOR.patchForNative(url, headers, params);
-    }
-
-    public static <T> Response patchForNative(String url, Headers headers, Params params, T body) {
-        return DEFAULT_EXECUTOR.patchForNative(url, headers, params, body);
-    }
-
     public static void patchAsync(String url) {
         DEFAULT_EXECUTOR.patchAsync(url);
     }
@@ -1035,22 +909,6 @@ public final class Http {
         return DEFAULT_EXECUTOR.delete(url, headers, params, type);
     }
 
-    public static Response deleteForNative(String url) {
-        return DEFAULT_EXECUTOR.deleteForNative(url);
-    }
-
-    public static Response deleteForNative(String url, Headers headers) {
-        return DEFAULT_EXECUTOR.deleteForNative(url, headers);
-    }
-
-    public static Response deleteForNative(String url, Params params) {
-        return DEFAULT_EXECUTOR.deleteForNative(url, params);
-    }
-
-    public static Response deleteForNative(String url, Headers headers, Params params) {
-        return DEFAULT_EXECUTOR.deleteForNative(url, headers, params);
-    }
-
     public static void deleteAsync(String url) {
         DEFAULT_EXECUTOR.deleteAsync(url);
     }
@@ -1148,10 +1006,6 @@ public final class Http {
 
     /******** 同步请求总方法 *********/
 
-    public static <T> Response execute(Method method, String url, Headers headers, Params params, T body, List<FileParam> fileParams) {
-        return DEFAULT_EXECUTOR.execute(method, url, headers, params, body, fileParams);
-    }
-
     public static <V, T> V execute(Method method, String url, Headers headers, Params params, T body, List<FileParam> fileParams, Class<V> type) {
         return DEFAULT_EXECUTOR.execute(method, url, headers, params, body, fileParams, type);
     }
@@ -1168,20 +1022,6 @@ public final class Http {
 
     public static <T> void enqueue(Method method, String url, Headers headers, Params params, T body, List<FileParam> fileParams, RequestCallback callback) {
         DEFAULT_EXECUTOR.enqueue(method, url, headers, params, body, fileParams, callback);
-    }
-
-    /******** Response 反序列化 *********/
-
-    public static <V> V serialize(Response response, Class<V> type) {
-        return DEFAULT_EXECUTOR.serialize(response, type);
-    }
-
-    public static <V> V serialize(Response response, TypeReference<V> typeReference) {
-        return DEFAULT_EXECUTOR.serialize(response, typeReference);
-    }
-
-    public static <V> V serialize(Response response, Type type) {
-        return DEFAULT_EXECUTOR.serialize(response, type);
     }
 
 }

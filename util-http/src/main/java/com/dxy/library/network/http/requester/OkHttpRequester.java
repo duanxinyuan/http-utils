@@ -1,5 +1,30 @@
 package com.dxy.library.network.http.requester;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.lang.reflect.Type;
+import java.net.Socket;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509ExtendedTrustManager;
+import javax.net.ssl.X509TrustManager;
+
 import com.dxy.library.network.http.builder.OkBuilder;
 import com.dxy.library.network.http.callback.RequestCallback;
 import com.dxy.library.network.http.constant.Method;
@@ -14,24 +39,20 @@ import com.dxy.library.util.common.IOUtils;
 import com.dxy.library.util.config.ConfigUtils;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.*;
-
-import javax.net.ssl.*;
-import java.io.*;
-import java.lang.reflect.Type;
-import java.net.Socket;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.security.SecureRandom;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.ConnectionPool;
+import okhttp3.ConnectionSpec;
+import okhttp3.Dispatcher;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Protocol;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 /**
  * OkHttp请求实例
+ *
  * @author duanxinyuan
  * 2016/9/28 13:15
  */
@@ -41,24 +62,35 @@ public final class OkHttpRequester extends AbstractRequester {
 
     private static final int ERROR_CODE = 500;
 
-    //请求被取消的响应标志
+    /**
+     * 请求被取消的响应标志
+     */
     private static final String CANCELED = "Canceled";
 
-    //异步请求的异步请求的最大并发请求数，默认为64
+    /**
+     * 异步请求的异步请求的最大并发请求数，默认为64
+     */
     private static final Integer ASYNC_MAX_REQUESTS = ConfigUtils.getAsInt("http.async.maxRequests", 64);
 
-    //异步请求的异步请求的单个域名最大并发请求数，默认为5
+    /**
+     * 异步请求的异步请求的单个域名最大并发请求数，默认为5
+     */
     private static final Integer ASYNC_MAX_REQUESTS_PER_HOST = ConfigUtils.getAsInt("http.async.maxRequestsPerHost", 5);
 
-    //每个地址的最大连接数，默认为5
+    /**
+     * 每个地址的最大连接数，默认为5
+     */
     private static final Integer MAX_IDLE_CONNECTIONS = ConfigUtils.getAsInt("http.maxIdleConnections", 5);
 
-    //连接的存活时间，单位为分钟，默认5分钟
+    /**
+     * 连接的存活时间，单位为分钟，默认5分钟
+     */
     private static final Integer KEEP_ALIVE_DURATION = ConfigUtils.getAsInt("http.keepAliveDuration", 5);
 
     private volatile OkHttpClient httpClient;
 
-    public OkHttpRequester(HttpSerializer httpSerializer, boolean requestLogEnable, long timeoutMillis, int retries, long retryIntervalMillis, boolean enableH2c) {
+    public OkHttpRequester(HttpSerializer httpSerializer, boolean requestLogEnable, long timeoutMillis, int retries,
+        long retryIntervalMillis, boolean enableH2c) {
         super(httpSerializer, requestLogEnable, timeoutMillis, retries, retryIntervalMillis, enableH2c);
         httpClient = newClient();
     }
@@ -101,7 +133,8 @@ public final class OkHttpRequester extends AbstractRequester {
         //配置网络协议
         //启用TLSv1和TLSv1.1，OkHttp3.13.0之后不再支持，此处特意添加 ConnectionSpec.COMPATIBLE_TLS
         //ConnectionSpec.MODERN_TLS, ConnectionSpec.CLEARTEXT为默认支持的配置
-        builder.connectionSpecs(Lists.newArrayList(ConnectionSpec.MODERN_TLS, ConnectionSpec.CLEARTEXT, ConnectionSpec.COMPATIBLE_TLS));
+        builder.connectionSpecs(
+            Lists.newArrayList(ConnectionSpec.MODERN_TLS, ConnectionSpec.CLEARTEXT, ConnectionSpec.COMPATIBLE_TLS));
         if (isEnableH2c()) {
             builder.protocols(Collections.singletonList(Protocol.H2_PRIOR_KNOWLEDGE));
         }
@@ -122,26 +155,30 @@ public final class OkHttpRequester extends AbstractRequester {
             //配置忽略SSL证书
             X509TrustManager trustManager = new X509ExtendedTrustManager() {
                 @Override
-                public void checkClientTrusted(X509Certificate[] x509Certificates, String s, Socket socket) throws CertificateException {
+                public void checkClientTrusted(X509Certificate[] x509Certificates, String s, Socket socket)
+                    throws CertificateException {
                 }
 
                 @Override
-                public void checkServerTrusted(X509Certificate[] x509Certificates, String s, Socket socket) throws CertificateException {
+                public void checkServerTrusted(X509Certificate[] x509Certificates, String s, Socket socket)
+                    throws CertificateException {
                 }
 
                 @Override
-                public void checkClientTrusted(X509Certificate[] x509Certificates, String s, SSLEngine sslEngine) throws CertificateException {
+                public void checkClientTrusted(X509Certificate[] x509Certificates, String s, SSLEngine sslEngine)
+                    throws CertificateException {
                 }
 
                 @Override
-                public void checkServerTrusted(X509Certificate[] x509Certificates, String s, SSLEngine sslEngine) throws CertificateException {
+                public void checkServerTrusted(X509Certificate[] x509Certificates, String s, SSLEngine sslEngine)
+                    throws CertificateException {
                 }
 
                 @Override
-                public void checkClientTrusted(X509Certificate[] x509Certificates, String s) { }
+                public void checkClientTrusted(X509Certificate[] x509Certificates, String s) {}
 
                 @Override
-                public void checkServerTrusted(X509Certificate[] x509Certificates, String s) { }
+                public void checkServerTrusted(X509Certificate[] x509Certificates, String s) {}
 
                 @Override
                 public X509Certificate[] getAcceptedIssuers() {
@@ -149,7 +186,7 @@ public final class OkHttpRequester extends AbstractRequester {
                 }
             };
             SSLContext sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(null, new TrustManager[]{trustManager}, new SecureRandom());
+            sslContext.init(null, new TrustManager[] {trustManager}, new SecureRandom());
 
             HostnameVerifier doNotVerify = (hostname, session) -> true;
             builder.sslSocketFactory(sslContext.getSocketFactory(), trustManager).hostnameVerifier(doNotVerify);
@@ -165,41 +202,37 @@ public final class OkHttpRequester extends AbstractRequester {
      * 同步请求
      */
     @Override
-    public <T> Response execute(Method method, String url, Headers headers, Params params, T body, List<FileParam> fileParams) {
+    public <V, T> V execute(Method method, String url, Headers headers, Params params, T body,
+        List<FileParam> fileParams, Type type) {
         OkBuilder builder = OkBuilder.builder(getHttpSerializer(), method, url, headers, params, body, fileParams);
         long startTime = System.currentTimeMillis();
         try {
             Response response = httpClient.newCall(builder.build()).execute();
+            V result = serialize(response, type);
             //log
             if (isRequestLogEnable()) {
                 long executionTime = System.currentTimeMillis() - startTime;
-                logResult(url, method, params, headers, body, response.code(), null, executionTime);
+                V resultForLog = type == InputStream.class || type == Reader.class ? null : result;
+                logResult(url, method, headers, params, body, resultForLog, response.code(), null, executionTime);
             }
-            return response;
+
+            return result;
         } catch (IOException e) {
             //log
             if (isRequestLogEnable()) {
                 long executionTime = System.currentTimeMillis() - startTime;
-                logResult(url, method, params, headers, body, ERROR_CODE, e, executionTime);
+                logResult(url, method, headers, params, body, null, ERROR_CODE, e, executionTime);
             }
             throw new HttpException("http call execute error", e);
         }
     }
 
     /**
-     * 同步请求
-     */
-    @Override
-    public <V, T> V execute(Method method, String url, Headers headers, Params params, T body, List<FileParam> fileParams, Type type) {
-        Response response = execute(method, url, headers, params, body, fileParams);
-        return serialize(response, type);
-    }
-
-    /**
      * 异步请求
      */
     @Override
-    public <T> void enqueue(Method method, String url, Headers headers, Params params, T body, List<FileParam> fileParams, RequestCallback callback) {
+    public <T> void enqueue(Method method, String url, Headers headers, Params params, T body,
+        List<FileParam> fileParams, RequestCallback callback) {
         OkBuilder builder = OkBuilder.builder(getHttpSerializer(), method, url, headers, params, body, fileParams);
         long startTime = System.currentTimeMillis();
         httpClient.newCall(builder.build()).enqueue(new Callback() {
@@ -210,7 +243,7 @@ public final class OkHttpRequester extends AbstractRequester {
                 //log
                 if (isRequestLogEnable()) {
                     long executionTime = System.currentTimeMillis() - startTime;
-                    logResult(url, method, params, headers, body, ERROR_CODE, e, executionTime);
+                    logResult(url, method, headers, params, body, null, ERROR_CODE, e, executionTime);
                 }
                 if (null == callback || CANCELED.equals(e.getMessage())) {
                     //Http请求已经取消
@@ -230,7 +263,7 @@ public final class OkHttpRequester extends AbstractRequester {
                 //log
                 if (isRequestLogEnable()) {
                     long executionTime = System.currentTimeMillis() - startTime;
-                    logResult(url, method, params, headers, body, response.code(), null, executionTime);
+                    logResult(url, method, headers, params, body, responseStr, response.code(), null, executionTime);
                 }
                 if (response.isSuccessful()) {
                     if (callback != null) {
@@ -323,21 +356,22 @@ public final class OkHttpRequester extends AbstractRequester {
             }
             V v;
             if (byte[].class == type || Byte[].class == type) {
-                v = (V) responseBody.bytes();
+                v = (V)responseBody.bytes();
             } else if (String.class == type) {
-                v = (V) responseBody.string();
+                v = (V)responseBody.string();
             } else if (InputStream.class == type) {
                 InputStream inputStream = IOUtils.cloneInputStream(responseBody.byteStream());
-                v = (V) inputStream;
+                v = (V)inputStream;
             } else if (Reader.class == type) {
                 InputStream inputStream = IOUtils.cloneInputStream(responseBody.byteStream());
                 MediaType contentType = responseBody.contentType();
-                Charset charset = contentType != null ? contentType.charset(StandardCharsets.UTF_8) : StandardCharsets.UTF_8;
+                Charset charset = contentType != null ? contentType.charset(StandardCharsets.UTF_8)
+                    : StandardCharsets.UTF_8;
                 if (null == charset) {
                     charset = StandardCharsets.UTF_8;
                 }
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream, charset);
-                v = (V) inputStreamReader;
+                v = (V)inputStreamReader;
             } else {
                 v = getHttpSerializer().from(responseBody.string(), type);
             }

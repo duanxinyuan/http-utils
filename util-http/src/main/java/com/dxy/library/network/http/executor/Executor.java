@@ -1,8 +1,11 @@
 package com.dxy.library.network.http.executor;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import java.io.OutputStream;
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 import com.dxy.library.network.http.callback.RequestCallback;
 import com.dxy.library.network.http.constant.Method;
 import com.dxy.library.network.http.header.Headers;
@@ -12,14 +15,10 @@ import com.dxy.library.network.http.param.Params;
 import com.dxy.library.network.http.requester.AbstractRequester;
 import com.dxy.library.network.http.requester.OkHttpRequester;
 import com.dxy.library.network.http.serializer.HttpSerializer;
-import okhttp3.Response;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.apache.commons.collections4.MapUtils;
-
-import java.io.OutputStream;
-import java.lang.reflect.Type;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Http执行器
@@ -194,22 +193,6 @@ public class Executor {
         return requester.execute(Method.GET, url, headers, params, null, null, type);
     }
 
-    public Response getForNative(String url) {
-        return requester.execute(Method.GET, url, null, null, null, null);
-    }
-
-    public Response getForNative(String url, Headers headers) {
-        return requester.execute(Method.GET, url, headers, null, null, null);
-    }
-
-    public Response getForNative(String url, Params params) {
-        return requester.execute(Method.GET, url, null, params, null, null);
-    }
-
-    public Response getForNative(String url, Headers headers, Params params) {
-        return requester.execute(Method.GET, url, headers, params, null, null);
-    }
-
     public void getAsync(String url) {
         getAsync(url, null, null, null);
     }
@@ -313,26 +296,6 @@ public class Executor {
         return requester.execute(Method.POST, url, headers, params, body, null, type);
     }
 
-    public Response postForNative(String url) {
-        return requester.execute(Method.POST, url, null, null, null, null);
-    }
-
-    public Response postForNative(String url, Headers headers) {
-        return requester.execute(Method.POST, url, headers, null, null, null);
-    }
-
-    public Response postForNative(String url, Params params) {
-        return requester.execute(Method.POST, url, null, params, null, null);
-    }
-
-    public Response postForNative(String url, Headers headers, Params params) {
-        return requester.execute(Method.POST, url, headers, params, null, null);
-    }
-
-    public <T> Response postForNative(String url, Headers headers, Params params, T body) {
-        return requester.execute(Method.POST, url, headers, params, body, null);
-    }
-
     public String postFile(String url, FileParam fileParam) {
         return postFile(url, null, null, fileParam, String.class);
     }
@@ -401,22 +364,6 @@ public class Executor {
         return requester.execute(Method.POST, url, headers, params, null, fileParams, type);
     }
 
-    public Response postFileForNative(String url, FileParam fileParam) {
-        return requester.execute(Method.POST, url, null, null, null, Lists.newArrayList(fileParam));
-    }
-
-    public Response postFileForNative(String url, Params params, FileParam fileParam) {
-        return requester.execute(Method.POST, url, null, params, null, Lists.newArrayList(fileParam));
-    }
-
-    public Response postFileForNative(String url, Headers headers, Params params, FileParam fileParam) {
-        return requester.execute(Method.POST, url, headers, params, null, Lists.newArrayList(fileParam));
-    }
-
-    public Response postFileForNative(String url, Headers headers, Params params, List<FileParam> fileParams) {
-        return requester.execute(Method.POST, url, headers, params, null, fileParams);
-    }
-
     public <T> String postJson(String url, T body) {
         return postJson(url, null, null, body, String.class);
     }
@@ -467,22 +414,6 @@ public class Executor {
 
     public <V, T> V postJson(String url, Headers headers, Params params, T body, Type type) {
         return requester.execute(Method.POST, url, headers, params, body, null, type);
-    }
-
-    public <T> Response postJsonForNative(String url, T body) {
-        return requester.execute(Method.POST, url, null, null, body, null);
-    }
-
-    public <T> Response postJsonForNative(String url, Headers headers, T body) {
-        return requester.execute(Method.POST, url, headers, null, body, null);
-    }
-
-    public <T> Response postJsonForNative(String url, Params params, T body) {
-        return requester.execute(Method.POST, url, null, params, body, null);
-    }
-
-    public <T> Response postJsonForNative(String url, Headers headers, Params params, T body) {
-        return requester.execute(Method.POST, url, headers, params, body, null);
     }
 
     public void postAsync(String url) {
@@ -672,26 +603,6 @@ public class Executor {
         return requester.execute(Method.PUT, url, headers, params, body, null, type);
     }
 
-    public Response putForNative(String url) {
-        return requester.execute(Method.PUT, url, null, null, null, null);
-    }
-
-    public Response putForNative(String url, Headers headers) {
-        return requester.execute(Method.PUT, url, headers, null, null, null);
-    }
-
-    public Response putForNative(String url, Params params) {
-        return requester.execute(Method.PUT, url, null, params, null, null);
-    }
-
-    public Response putForNative(String url, Headers headers, Params params) {
-        return requester.execute(Method.PUT, url, headers, params, null, null);
-    }
-
-    public <T> Response putForNative(String url, Headers headers, Params params, T body) {
-        return requester.execute(Method.PUT, url, headers, params, body, null);
-    }
-
     public <T> String putJson(String url, T body) {
         return putJson(url, null, null, body, String.class);
     }
@@ -742,22 +653,6 @@ public class Executor {
 
     public <V, T> V putJson(String url, Headers headers, Params params, T body, Type type) {
         return requester.execute(Method.PUT, url, headers, params, body, null, type);
-    }
-
-    public <T> Response putJsonForNative(String url, T body) {
-        return requester.execute(Method.PUT, url, null, null, body, null);
-    }
-
-    public <T> Response putJsonForNative(String url, Headers headers, T body) {
-        return requester.execute(Method.PUT, url, headers, null, body, null);
-    }
-
-    public <T> Response putJsonForNative(String url, Params params, T body) {
-        return requester.execute(Method.PUT, url, null, params, body, null);
-    }
-
-    public <T> Response putJsonForNative(String url, Headers headers, Params params, T body) {
-        return requester.execute(Method.PUT, url, headers, params, body, null);
     }
 
     public void putAsync(String url) {
@@ -895,26 +790,6 @@ public class Executor {
         return requester.execute(Method.PATCH, url, headers, params, body, null, type);
     }
 
-    public Response patchForNative(String url) {
-        return requester.execute(Method.PATCH, url, null, null, null, null);
-    }
-
-    public Response patchForNative(String url, Headers headers) {
-        return requester.execute(Method.PATCH, url, headers, null, null, null);
-    }
-
-    public Response patchForNative(String url, Params params) {
-        return requester.execute(Method.PATCH, url, null, params, null, null);
-    }
-
-    public Response patchForNative(String url, Headers headers, Params params) {
-        return requester.execute(Method.PATCH, url, headers, params, null, null);
-    }
-
-    public <T> Response patchForNative(String url, Headers headers, Params params, T body) {
-        return requester.execute(Method.PATCH, url, headers, params, body, null);
-    }
-
     public void patchAsync(String url) {
         patchAsync(url, null, null, null);
     }
@@ -1017,22 +892,6 @@ public class Executor {
         return requester.execute(Method.DELETE, url, headers, params, null, null, type);
     }
 
-    public Response deleteForNative(String url) {
-        return requester.execute(Method.DELETE, url, null, null, null, null);
-    }
-
-    public Response deleteForNative(String url, Headers headers) {
-        return requester.execute(Method.DELETE, url, headers, null, null, null);
-    }
-
-    public Response deleteForNative(String url, Params params) {
-        return requester.execute(Method.DELETE, url, null, params, null, null);
-    }
-
-    public Response deleteForNative(String url, Headers headers, Params params) {
-        return requester.execute(Method.DELETE, url, headers, params, null, null);
-    }
-
     public void deleteAsync(String url) {
         deleteAsync(url, null, null, null);
     }
@@ -1129,10 +988,6 @@ public class Executor {
 
     /******** 同步请求总方法 *********/
 
-    public <T> Response execute(Method method, String url, Headers headers, Params params, T body, List<FileParam> fileParams) {
-        return requester.execute(method, url, headers, params, body, fileParams);
-    }
-
     public <V, T> V execute(Method method, String url, Headers headers, Params params, T body, List<FileParam> fileParams, Class<V> type) {
         return requester.execute(method, url, headers, params, body, fileParams, type);
     }
@@ -1149,20 +1004,6 @@ public class Executor {
 
     public <T> void enqueue(Method method, String url, Headers headers, Params params, T body, List<FileParam> fileParams, RequestCallback callback) {
         requester.enqueue(method, url, headers, params, body, fileParams, callback);
-    }
-
-    /******** Response 反序列化 *********/
-
-    public <V> V serialize(Response response, Class<V> type) {
-        return requester.serialize(response, type);
-    }
-
-    public <V> V serialize(Response response, TypeReference<V> typeReference) {
-        return requester.serialize(response, typeReference.getType());
-    }
-
-    public <V> V serialize(Response response, Type type) {
-        return requester.serialize(response, type);
     }
 
 }
